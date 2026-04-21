@@ -1001,32 +1001,24 @@ async function loadFromSheet() {
 }
 
 function formatDateFromSheet(val) {
-  if (!val) return '';
-  
+  if (!val) return '-';
   try {
-    // 1. Kalau formatnya string ISO (misal: 2026-04-21T18:00:00Z)
-    // Kita potong langsung ambil YYYY-MM-DD nya aja biar gak kena timezone
-    if (typeof val === 'string' && val.includes('-')) {
-      const parts = val.split('T')[0].split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`; // Hasil: 21/04/2026
-      }
-    }
-    
-    // 2. Kalau formatnya objek Date asli
-    const d = new Date(val);
+    // Kalau val itu objek Date dari Google Sheets
+    let d = new Date(val);
     if (!isNaN(d.getTime())) {
-      const day = ("0" + d.getDate()).slice(-2);
-      const month = ("0" + (d.getMonth() + 1)).slice(-2);
-      const year = d.getFullYear();
-      return `${day}/${month}/${year}`; // Hasil: 21/04/2026
+      let day = ("0" + d.getDate()).slice(-2);
+      let month = ("0" + (d.getMonth() + 1)).slice(-2);
+      let year = d.getFullYear();
+      return `${day}/${month}/${year}`;
     }
-    
-    // 3. Kalau semua cara gagal, balikin apa adanya biar data gak ilang
+    // Kalau val itu string (misal: 2026-04-21)
+    if (typeof val === 'string' && val.includes('-')) {
+      const p = val.split('T')[0].split('-');
+      return `${p[2]}/${p[1]}/${p[0]}`;
+    }
     return val;
   } catch (e) {
-    console.log("Error format tanggal:", e);
-    return val;
+    return "-";
   }
 }
     
