@@ -1000,16 +1000,12 @@ async function loadFromSheet() {
   renderFilterRow();
 }
 
-    function formatDate(dateString) {
-  if (!dateString) return "-";
-  
-  // Ambil tanggalnya saja (YYYY-MM-DD), abaikan jam/timezone
-  const dateOnly = dateString.split('T')[0];
-  const [year, month, day] = dateOnly.split('-');
-  
-  // Balikin jadi format Indonesia (DD/MM/YYYY) atau (DD Mon YYYY)
-  // Cara ini paling aman karena kita susun manual teksnya
-  return `${day}/${month}/${year}`;
+    function formatDateFromSheet(val) {
+  if (!val) return '';
+  if (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}/)) return val.substring(0,10);
+  const d = new Date(val);
+  if (!isNaN(d)) return d.toISOString().split('T')[0];
+  return String(val);
 }
     
 function showLoading(state) {
