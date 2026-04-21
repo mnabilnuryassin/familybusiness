@@ -1000,12 +1000,34 @@ async function loadFromSheet() {
   renderFilterRow();
 }
 
-    function formatDateFromSheet(val) {
+function formatDateFromSheet(val) {
   if (!val) return '';
-  if (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}/)) return val.substring(0,10);
-  const d = new Date(val);
-  if (!isNaN(d)) return d.toISOString().split('T')[0];
-  return String(val);
+  
+  try {
+    // 1. Kalau formatnya string ISO (misal: 2026-04-21T18:00:00Z)
+    // Kita potong langsung ambil YYYY-MM-DD nya aja biar gak kena timezone
+    if (typeof val === 'string' && val.includes('-')) {
+      const parts = val.split('T')[0].split('-');
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`; // Hasil: 21/04/2026
+      }
+    }
+    
+    // 2. Kalau formatnya objek Date asli
+    const d = new Date(val);
+    if (!isNaN(d.getTime())) {
+      const day = ("0" + d.getDate()).slice(-2);
+      const month = ("0" + (d.getMonth() + 1)).slice(-2);
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`; // Hasil: 21/04/2026
+    }
+    
+    // 3. Kalau semua cara gagal, balikin apa adanya biar data gak ilang
+    return val;
+  } catch (e) {
+    console.log("Error format tanggal:", e);
+    return val;
+  }
 }
     
 function showLoading(state) {
