@@ -679,6 +679,38 @@
     margin-top: 8px;
     box-shadow: 0 4px 14px rgba(92,61,46,0.3);
   }
+
+/* Style untuk Accordion Tanggal */
+.date-group-details {
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.date-group-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 5px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brown);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.date-group-summary::after {
+  content: '▼';
+  font-size: 0.6rem;
+  transition: transform 0.2s;
+  color: var(--muted);
+}
+.date-group-details[open] .date-group-summary::after {
+  transform: rotate(180deg);
+}
+.date-group-summary::-webkit-details-marker {
+  display: none;
+}
+    
   .hidden { display: none !important; }
 </style>
 </head>
@@ -713,22 +745,35 @@
       <h3>⚙️ Pengaturan Akun</h3>
       <button class="modal-close" onclick="closeSettingsBtn()">✕</button>
     </div>
+    
     <div class="login-row">
       <label>Username</label>
-      <input type="text" id="settingUsername" disabled style="opacity:0.6;">
+      <input type="text" id="settingUsername" disabled style="opacity:0.6; background: #eee;">
     </div>
-    <div class="login-row">
-      <label>Password Baru</label>
-      <input type="password" id="settingNewPassword" placeholder="Kosongkan jika tidak diubah">
+
+    <div id="pwdBtnContainer" style="text-align: center; padding: 10px 0;">
+      <button class="btn-submit" style="background: var(--accent); font-size: 0.85rem;" onclick="showPwdForm()">
+        🔑 Ubah Password
+      </button>
     </div>
-    <div class="login-row">
-      <label>Konfirmasi Password Baru</label>
-      <input type="password" id="settingConfirmPassword" placeholder="Ulangi password baru">
+
+    <div id="pwdFormSection" class="hidden">
+      <div class="login-row">
+        <label>Password Baru</label>
+        <input type="password" id="settingNewPassword" placeholder="Masukkan password baru">
+      </div>
+      <div class="login-row">
+        <label>Konfirmasi Password Baru</label>
+        <input type="password" id="settingConfirmPassword" placeholder="Ulangi password baru">
+      </div>
+      <div class="login-error" id="settingError"></div>
+      <button class="btn-save-settings" onclick="saveSettings()">Simpan Password Baru</button>
+      <button class="btn-logout" style="border:none; background:none; font-size: 0.75rem; text-decoration: underline;" onclick="hidePwdForm()">Batal</button>
     </div>
-    <div class="login-error" id="settingError"></div>
-    <button class="btn-save-settings" onclick="saveSettings()">Simpan Perubahan</button>
-    <button class="btn-logout" onclick="doLogout()">🚪 Keluar</button>
-  </div>
+
+    <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border);">
+    <button class="btn-logout" onclick="doLogout()">🚪 Keluar / Logout</button>
+</div>
 </div>
 
 <!-- ── MAIN APP ── -->
@@ -960,10 +1005,20 @@ function doLogout() {
 // ── SETTINGS ──────────────────────────────────────
 function openSettings() {
   document.getElementById('settingUsername').value = currentUser.username;
+  hidePwdForm(); // Pastikan form tertutup pas modal dibuka
+  document.getElementById('settingsModal').classList.remove('hidden');
+}
+
+function showPwdForm() {
+  document.getElementById('pwdBtnContainer').classList.add('hidden');
+  document.getElementById('pwdFormSection').classList.remove('hidden');
+}
+
+function hidePwdForm() {
+  document.getElementById('pwdBtnContainer').classList.remove('hidden');
+  document.getElementById('pwdFormSection').classList.add('hidden');
   document.getElementById('settingNewPassword').value = '';
   document.getElementById('settingConfirmPassword').value = '';
-  document.getElementById('settingError').textContent = '';
-  document.getElementById('settingsModal').classList.remove('hidden');
 }
 
 function closeSettingsBtn() {
