@@ -222,6 +222,14 @@
     transition: border-color 0.2s, background 0.2s;
     -webkit-appearance: none;
   }
+  .form-row select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235C3D2E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px; /* Biar teks gak nabrak icon panah */
+}  
   .form-row input:focus,
   .form-row select:focus,
   .form-row textarea:focus {
@@ -749,10 +757,11 @@
 
   <!-- ===== PENGELUARAN FIELDS ===== -->
   <div id="expenseFields">
-    <div class="form-row">
-      <label>Kategori</label>
-      <div class="cat-grid" id="catGrid"></div>
-    </div>
+<div class="form-row">
+  <label>Kategori</label>
+  <select id="selectCatExp" onchange="selectCat(this.value)">
+    </select>
+</div>
 
     <div class="form-row">
       <label>Label</label>
@@ -1055,14 +1064,9 @@ function setIncomeSource(src) {
   document.getElementById('customSourceRow').style.display = src==='lain' ? 'block' : 'none';
 }
 
-function renderCats() {
-  const grid = document.getElementById('catGrid');
-  if (!grid) return;
-  grid.innerHTML = CATS_EXPENSE.map(c => `
-    <button class="cat-pill ${selectedCat===c.id?'selected':''}" onclick="selectCat('${c.id}')">
-      <span>${c.icon}</span> ${c.label}
-    </button>
-  `).join('');
+function selectCat(id) { 
+  selectedCat = id; 
+  // Tidak perlu render ulang semua karena ini dropdown
 }
 
 function selectCat(id) { selectedCat = id; renderCats(); }
@@ -1081,6 +1085,9 @@ function getRawAmount(id) {
 // ── SAVE ──────────────────────────────────────────
 async function saveEntry() {
   let entry;
+
+document.getElementById('selectCatExp').value = ''; 
+selectedCat = '';
 
   if (currentType === 'expense') {
     const amount = getRawAmount('inputAmountExp');
