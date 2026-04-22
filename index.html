@@ -433,6 +433,43 @@
     background: var(--border);
   }
 
+/* Style untuk Accordion Tanggal */
+.date-group-details {
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.date-group-summary {
+  list-style: none; /* Hilangkan panah bawaan browser */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 5px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brown);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Bikin panah custom */
+.date-group-summary::after {
+  content: '▼';
+  font-size: 0.6rem;
+  transition: transform 0.2s;
+  color: var(--muted);
+}
+
+/* Putar panah pas kebuka */
+.date-group-details[open] .date-group-summary::after {
+  transform: rotate(180deg);
+}
+
+.date-group-summary::-webkit-details-marker {
+  display: none; /* Hilangkan panah di Safari */
+}
+    
   .empty-state {
     text-align: center;
     padding: 50px 20px;
@@ -1240,40 +1277,58 @@ function renderHistory() {
   } else if (filterCat !== 'all') {
     month = month.filter(e => e.catLabel === filterCat);
   }
+  
   const list = document.getElementById('historyList');
   if (!month.length) {
     list.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>Belum ada catatan<br>bulan ini</p></div>`;
     return;
   }
+
   const grouped = {};
   month.forEach(e => {
     if (!grouped[e.date]) grouped[e.date] = [];
     grouped[e.date].push(e);
   });
-  const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+
+  const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+  const todayStr = new Date().toISOString().split('T')[0]; // Buat cek hari ini
+
   list.innerHTML = sortedDates.map(date => {
     const d = new Date(date + 'T00:00:00');
-    const label = d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'short'});
+    const label = d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' });
+    
+    // Otomatis buka accordion kalau itu tanggal hari ini
+    const isOpen = date === todayStr ? 'open' : '';
+
     return `
-      <div class="date-group-label">${label}</div>
-      ${grouped[date].map(e => {
-        const badgeClass = e.type==='income' ? 'income-badge' : (e.inl==='needs' ? 'needs' : 'lifestyle');
-        const badgeText = e.type==='income' ? 'Income' : (e.inlLabel || '');
-        return `
-        <div class="entry-item ${e.type==='income'?'income-item':'expense-item'}">
-          <div class="entry-left">
-            <div class="entry-top">
-              <span class="entry-cat-badge ${badgeClass}">${badgeText}</span>
-              <span class="entry-cat">${e.catIcon} ${e.catLabel}</span>
-            </div>
-            <div class="entry-desc">${e.desc || '—'}</div>
-          </div>
-          <div class="entry-right">
-            <div class="entry-amount ${e.type}">${e.type==='income'?'+':'−'}${formatRp(e.amount)}</div>
-            <button class="entry-del" onclick="deleteEntry(${e.id})">✕ hapus</button>
-          </div>
-        </div>`;
-      }).join('')}`;
+      <details class="date-group-details" ${isOpen}>
+        <summary class="date-group-summary">
+          <span>${label}</span>
+          <span style="font-weight:400; opacity:0.6; font-size:0.65rem; margin-right:10px;">
+            ${grouped[date].length} transaksi
+          </span>
+        </summary>
+        <div style="padding-bottom: 10px;">
+          ${grouped[date].map(e => {
+            const badgeClass = e.type === 'income' ? 'income-badge' : (e.inl === 'needs' ? 'needs' : 'lifestyle');
+            const badgeText = e.type === 'income' ? 'Income' : (e.inlLabel || '');
+            return `
+              <div class="entry-item ${e.type === 'income' ? 'income-item' : 'expense-item'}">
+                <div class="entry-left">
+                  <div class="entry-top">
+                    <span class="entry-cat-badge ${badgeClass}">${badgeText}</span>
+                    <span class="entry-cat">${e.catIcon} ${e.catLabel}</span>
+                  </div>
+                  <div class="entry-desc">${e.desc || '—'}</div>
+                </div>
+                <div class="entry-right">
+                  <div class="entry-amount ${e.type}">${e.type === 'income' ? '+' : '−'}${formatRp(e.amount)}</div>
+                  <button class="entry-del" onclick="deleteEntry(${e.id})">✕ hapus</button>
+                </div>
+              </div>`;
+          }).join('')}
+        </div>
+      </details>`;
   }).join('');
 }
 
