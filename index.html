@@ -1001,24 +1001,20 @@ async function loadFromSheet() {
 }
 
 function formatDateFromSheet(val) {
-  if (!val) return '-';
+  if (!val) return "";
   try {
-    // Kalau val itu objek Date dari Google Sheets
     let d = new Date(val);
-    if (!isNaN(d.getTime())) {
-      let day = ("0" + d.getDate()).slice(-2);
-      let month = ("0" + (d.getMonth() + 1)).slice(-2);
-      let year = d.getFullYear();
-      return `${day}/${month}/${year}`;
-    }
-    // Kalau val itu string (misal: 2026-04-21)
-    if (typeof val === 'string' && val.includes('-')) {
-      const p = val.split('T')[0].split('-');
-      return `${p[2]}/${p[1]}/${p[0]}`;
-    }
-    return val;
+    // Jika format dari sheet aneh, coba parsing manual
+    if (isNaN(d.getTime())) return val; 
+    
+    let day = ("0" + d.getDate()).slice(-2);
+    let month = ("0" + (d.getMonth() + 1)).slice(-2);
+    let year = d.getFullYear();
+    
+    // Harus balik ke format YYYY-MM-DD
+    return `${year}-${month}-${day}`;
   } catch (e) {
-    return "-";
+    return "";
   }
 }
     
