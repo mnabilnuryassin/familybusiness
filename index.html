@@ -1064,12 +1064,26 @@ function setIncomeSource(src) {
   document.getElementById('customSourceRow').style.display = src==='lain' ? 'block' : 'none';
 }
 
+function renderCats() {
+  const select = document.getElementById('selectCatExp');
+  if (!select) return;
+  
+  // Ini buat ngisi pilihan di dalam dropdown
+  let options = '<option value="">-- Pilih Kategori --</option>';
+  options += CATS_EXPENSE.map(c => `
+    <option value="${c.id}" ${selectedCat === c.id ? 'selected' : ''}>
+      ${c.icon} ${c.label}
+    </option>
+  `).join('');
+  
+  select.innerHTML = options;
+}
+    
 function selectCat(id) { 
   selectedCat = id; 
-  // Tidak perlu render ulang semua karena ini dropdown
 }
 
-function selectCat(id) { selectedCat = id; renderCats(); }
+// function selectCat(id) { selectedCat = id; renderCats(); }
 
 function formatAmountInput(el) {
   let raw = el.value.replace(/\D/g, '');
@@ -1085,9 +1099,6 @@ function getRawAmount(id) {
 // ── SAVE ──────────────────────────────────────────
 async function saveEntry() {
   let entry;
-
-document.getElementById('selectCatExp').value = ''; 
-selectedCat = '';
 
   if (currentType === 'expense') {
     const amount = getRawAmount('inputAmountExp');
@@ -1107,6 +1118,7 @@ selectedCat = '';
     };
     document.getElementById('inputAmountExp').value = '';
     document.getElementById('inputDescExp').value = '';
+    document.getElementById('selectCatExp').value = ''; 
     selectedCat = ''; selectedINL = '';
     ['btnNeeds','btnLifestyle'].forEach(id => document.getElementById(id).classList.remove('selected'));
     renderCats();
