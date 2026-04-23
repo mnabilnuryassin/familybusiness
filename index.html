@@ -234,7 +234,7 @@ body {
             </div>
 
             <label class="form-label">Description</label>
-            <textarea id="inputDesc" class="neu-inset" style="height: 80px; resize: none;" placeholder="Beli apa hari ini?"></textarea>
+            <textarea id="inputDesc" class="neu-inset" style="height: 80px; resize: none;"></textarea>
         </div>
 
         <button onclick="saveEntry()" class="btn-submit" style="width:100%; padding:15px; background:var(--accent); border:none; border-radius:16px; font-weight:bold; margin-top:25px; color:var(--bg);">Confirm Transaction</button>
@@ -324,6 +324,7 @@ async function doLogin() {
 function initApp() {
     const now = new Date();
     document.getElementById('inputDate').value = now.toISOString().split('T')[0];
+    document.getElementById('inputDesc').placeholder = "dipake buat beli apa duitnya?";
     renderCats();
     loadFromSheet();
 }
@@ -536,14 +537,24 @@ function setLabel(val) {
     document.getElementById('btnLifestyle').classList.toggle('active', val === 'lifestyle');
 }
 
-// Update fungsi setEntryType lu biar Label Section ilang pas milih Income
 function setEntryType(type) {
     currentEntryType = type;
+    const descInput = document.getElementById('inputDesc'); // Ambil elemen deskripsi
+    
     document.getElementById('btnExp').classList.toggle('active', type === 'expense');
     document.getElementById('btnInc').classList.toggle('active', type === 'income');
     document.getElementById('labelSection').style.display = (type === 'expense') ? 'block' : 'none';
+    
+    // Logika ganti placeholder
+    if (type === 'expense') {
+        descInput.placeholder = "dipake buat beli apa duitnya?";
+    } else {
+        descInput.placeholder = "dapet duit dari mana nih?";
+    }
+    
     renderCats();
-}  
+}
+  
 </script>
 </body>
 </html>
