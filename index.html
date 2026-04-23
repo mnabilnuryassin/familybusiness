@@ -66,6 +66,10 @@ body {
 
   .user-info { display: flex; align-items: center; gap: 12px; }
   .avatar { width: 45px; height: 45px; background: var(--accent); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: var(--bg); font-weight: bold; font-size: 1.2rem; }
+  /* Fix warna teks inisial (M) di lingkaran kuning */
+.avatar {
+    color: #1A120B !important; /* Ganti teks putih jadi hitam pekat */
+}
 
   /* ── SUMARY SALDO ── */
   .balance-label { color: var(--muted); font-size: 0.85rem; letter-spacing: 1px; }
