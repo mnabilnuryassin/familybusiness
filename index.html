@@ -447,6 +447,53 @@ function switchPanel(panelId, el) {
     el.classList.add('active');
 }
 function doLogout() { location.reload(); }
+// ── FUNGSI TAMBAHAN (FIX ERROR CONSOLE) ──
+
+// Fungsi nutup modal kalau klik area luar (background hitam)
+function closeModalOnOut(e, id) {
+    if (e.target.id === id) closeModal(id);
+}
+
+// Fungsi memunculkan kolom input password baru
+function showPwdFields() {
+    document.getElementById('pwdSection').classList.remove('hidden');
+    document.getElementById('pwdTrigger').classList.add('hidden');
+}
+
+// Fungsi menyembunyikan kembali kolom password (tombol Batal)
+function hidePwdForm() {
+    document.getElementById('pwdSection').classList.add('hidden');
+    document.getElementById('pwdTrigger').classList.remove('hidden');
+    document.getElementById('newPwd').value = '';
+}
+
+// Fungsi umum nutup modal berdasarkan ID
+function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+}
+
+// Fungsi konfirmasi ubah password (dipanggil di tombol Update Password)
+async function confirmNewPwd() {
+    const newPass = document.getElementById('newPwd').value.trim();
+    if (!newPass || newPass.length < 4) {
+        showToast('⚠️ Password minimal 4 karakter', true);
+        return;
+    }
+    
+    showToast('💾 Menghubungkan...');
+    try {
+        await fetch(ACCOUNTS_URL, {
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: currentUser.username, new_password: newPass })
+        });
+        showToast('✅ Password Berhasil Diubah!');
+        hidePwdForm();
+        closeModal('settingsModal');
+    } catch(e) {
+        showToast('❌ Gagal mengubah password', true);
+    }
+}
 </script>
 </body>
 </html>
