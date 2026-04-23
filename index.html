@@ -213,7 +213,11 @@ body {
 
         <div id="formFields">
             <label class="form-label">Category</label>
-            <select id="selectCatExp" class="neu-inset"></select>
+            <select id="selectCatExp" class="neu-inset" onchange="checkIncomeSource(this.value)"></select>
+          <div id="customSourceSection" class="hidden" style="margin-top: 15px;">
+    <label class="form-label">Sumber Pendapatan Spesifik</label>
+    <input type="text" id="inputCustomSource" class="neu-inset" placeholder="Misal: bonus kerja, dikasih abah...">
+</div>
 <div id="labelSection">
     <label class="form-label">Label (Needs / Lifestyle)</label>
     <div class="type-grid" style="margin-bottom: 0;">
@@ -369,20 +373,42 @@ async function saveEntry() {
     const date = document.getElementById('inputDate').value;
     const desc = document.getElementById('inputDesc').value.trim();
     const catSelect = document.getElementById('selectCatExp');
-    const selectedCatText = catSelect.options[catSelect.selectedIndex].text;
+    const customSource = document.getElementById('inputCustomSource').value.trim();
+    
+    // 1. Validasi Dasar
+    if (!amount || !date) { showToast('⚠️ Jumlah & Tanggal wajib diisi!', true); return; }
 
-    if (!amount || !date || !desc) { showToast('⚠️ Lengkapi data!', true); return; }
+    // 2. Validasi Khusus Pengeluaran (Deskripsi Wajib)
+    if (currentEntryType === 'expense' && !desc) {
+        showToast('⚠️ Kasih keterangan duitnya buat apa!', true);
+        return;
+    }
+
+    // 3. Validasi Khusus Pemasukan (Sumber Lain Wajib Diisi)
+    let finalCatLabel = catSelect.options[catSelect.selectedIndex].text;
+    if (currentEntryType === 'income' && catSelect.value === 'lain') {
+        if (!customSource) {
+            showToast('⚠️ Sumber lainnya dapet dari mana?', true);
+            return;
+        }
+        finalCatLabel = customSource; // Ganti label 'Sumber Lain' jadi inputan user
+    }
 
     const entry = {
         id: Date.now(),
         type: currentEntryType,
         date: date,
-        catLabel: selectedCatText.split(' ').slice(1).join(' '),
-        catIcon: selectedCatText.split(' ')[0],
+        catLabel: currentEntryType === 'income' ? finalCatLabel : finalCatLabel.split(' ').slice(1).join(' '),
+        catIcon: currentEntryType === 'income' ? '💵' : finalCatLabel.split(' ')[0],
         amount: amount,
-        desc: desc,
-        inlLabel: currentEntryType === 'expense' ? (selectedINL === 'needs' ? 'Needs' : 'Lifestyle') : 'Income',
+        desc: desc || "-", // Kalau kosong kasih strip (khusus income)
+        inlLabel: currentEntryType === 'expense' ? (selectedINL === 'needs' ? 'Needs' : 'Lifestyle') : 'Income'
     };
+
+    // ... sisa kode simpan ke sheet (fetch) tetep sama ...
+    // Jangan lupa reset input customSource setelah simpan
+    document.getElementById('inputCustomSource').value = '';
+}
 
     showToast('💾 Menyimpan...');
     entries.unshift(entry);
@@ -552,6 +578,37 @@ function setEntryType(type) {
         descInput.placeholder = "dapet duit dari mana nih?";
     }
     
+    renderCats();
+}
+
+// Fungsi buat ngecek apakah user milih 'Sumber Lain'
+function checkIncomeSource(val) {
+    const customSection = document.getElementById('customSourceSection');
+    if (currentEntryType === 'income' && val === 'lain') {
+        customSection.classList.remove('hidden');
+    } else {
+        customSection.classList.add('hidden');
+    }
+}
+
+// Update fungsi setEntryType yang lama
+function setEntryType(type) {
+    currentEntryType = type;
+    const descInput = document.getElementById('inputDesc');
+    const customSection = document.getElementById('customSourceSection');
+    
+    document.getElementById('btnExp').classList.toggle('active', type === 'expense');
+    document.getElementById('btnInc').classList.toggle('active', type === 'income');
+    document.getElementById('labelSection').style.display = (type === 'expense') ? 'block' : 'none';
+    
+    // Sembunyiin custom source setiap ganti jenis
+    customSection.classList.add('hidden');
+
+    if (type === 'expense') {
+        descInput.placeholder = "dipake buat beli apa duitnya?";
+    } else {
+        descInput.placeholder = "buat keperluan apa duit ini? (opsional)";
+    }
     renderCats();
 }
   
