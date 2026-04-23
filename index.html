@@ -171,21 +171,92 @@
     </div>
 </div>
 
+<div id="addModal" class="modal-overlay hidden" onclick="closeModalOnOut(event, 'addModal')">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: var(--accent);">New Transaction</h2>
+            <div onclick="closeModal('addModal')" style="cursor:pointer; opacity:0.5;">✕</div>
+        </div>
+
+        <div class="type-grid">
+            <div id="btnExp" class="type-btn active" onclick="setEntryType('expense')">💸 Expense</div>
+            <div id="btnInc" class="type-btn" onclick="setEntryType('income')">💵 Income</div>
+        </div>
+
+        <div id="formFields">
+            <label class="form-label">Category</label>
+            <select id="selectCatExp" class="neu-inset"></select>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div>
+                    <label class="form-label">Amount (Rp)</label>
+                    <input type="number" id="inputAmount" class="neu-inset" placeholder="0">
+                </div>
+                <div>
+                    <label class="form-label">Date</label>
+                    <input type="date" id="inputDate" class="neu-inset">
+                </div>
+            </div>
+
+            <label class="form-label">Description</label>
+            <textarea id="inputDesc" class="neu-inset" style="height: 80px; resize: none;" placeholder="Beli apa hari ini?"></textarea>
+        </div>
+
+        <button onclick="saveEntry()" class="btn-submit" style="width:100%; padding:15px; background:var(--accent); border:none; border-radius:16px; font-weight:bold; margin-top:25px; color:var(--bg);">Confirm Transaction</button>
+    </div>
+</div>
+
+<div id="settingsModal" class="modal-overlay hidden" onclick="closeModalOnOut(event, 'settingsModal')">
+    <div class="modal-content">
+        <h2 style="margin-bottom: 25px;">Account Settings</h2>
+        
+        <label class="form-label">Username</label>
+        <input type="text" id="settingUser" class="neu-inset" disabled style="opacity: 0.5;">
+
+        <div id="pwdSection" class="hidden" style="margin-top: 20px;">
+            <label class="form-label">New Password</label>
+            <input type="password" id="newPwd" class="neu-inset" placeholder="••••••">
+            <button onclick="confirmNewPwd()" class="btn-submit" style="width:100%; padding:12px; background:var(--accent); color:var(--bg); border:none; border-radius:12px; margin-top:15px; font-weight:bold;">Update Password</button>
+        </div>
+
+        <button id="pwdTrigger" onclick="showPwdFields()" class="neu-card" style="width:100%; text-align:left; border:none; color:var(--text); margin-top:20px; cursor:pointer;">
+            🔑 Change Password
+        </button>
+
+        <button onclick="doLogout()" class="neu-card" style="width:100%; text-align:center; border:1px solid var(--red); color:var(--red); background:transparent; margin-top:10px; cursor:pointer;">
+            🚪 Logout
+        </button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-    // -- Script Tahap 1: Navigasi Dasar --
-    function switchPanel(panelId, el) {
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('panel-' + panelId).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
+   let currentEntryType = 'expense';
+
+    function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
+    function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); }
+    
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function closeModalOnOut(e, id) { if(e.target.id === id) closeModal(id); }
+
+    function setEntryType(type) {
+        currentEntryType = type;
+        document.getElementById('btnExp').classList.toggle('active', type === 'expense');
+        document.getElementById('btnInc').classList.toggle('active', type === 'income');
+        // Logic ganti field kategori bisa ditaruh di sini nanti
     }
 
-    function openSettings() { alert('Settings Modal akan dibuat di Tahap 2'); }
-    function openAddModal() { alert('Form Input akan dibuat di Tahap 2'); }
+    function showPwdFields() {
+        document.getElementById('pwdSection').classList.remove('hidden');
+        document.getElementById('pwdTrigger').classList.add('hidden');
+    }
+
+    // Login Bypass buat testing
     function doLogin() {
-        // Dummy login dulu biar lu bisa liat dashboardnya
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
+        renderCats(); // Nanti dipanggil di Tahap 3
     }
 </script>
 </body>
