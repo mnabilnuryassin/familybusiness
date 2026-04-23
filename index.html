@@ -289,329 +289,311 @@ const CATS_EXPENSE = [
 ];
 
 const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
-const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
 let currentUser = null;
 let SHEET_URL = '';
 let currentEntryType = 'expense';
+let selectedINL = 'needs';
 let entries = [];
-let selectedINL = 'needs'; // Default awal  
-let viewMonth = new Date().getMonth();
-let viewYear = new Date().getFullYear();
 
 // ── LOGIN ──
 async function doLogin() {
-    const user = document.getElementById('loginUsername').value.trim();
-    const pass = document.getElementById('loginPassword').value.trim();
-    const err = document.getElementById('loginError');
-    if (!user || !pass) { err.textContent = 'Isi dulu bro!'; return; }
+  const user = document.getElementById('loginUsername').value.trim();
+  const pass = document.getElementById('loginPassword').value.trim();
+  const err = document.getElementById('loginError');
+  if (!user || !pass) { err.textContent = 'Isi dulu bro!'; return; }
 
-    err.textContent = 'Memverifikasi...';
-    try {
-        const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
-        const accounts = await res.json();
-        const found = accounts.find(a => a.username === user && a.password === pass);
-        
-        if (found) {
-            currentUser = found;
-            SHEET_URL = found.sheet_url;
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
-            document.getElementById('userLabel').textContent = user;
-            initApp();
-        } else { err.textContent = 'Username/Password salah!'; }
-    } catch(e) { err.textContent = 'Koneksi bermasalah.'; }
+  err.textContent = 'Memverifikasi...';
+  try {
+    const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
+    const accounts = await res.json();
+    const found = accounts.find(a => a.username === user && a.password === pass);
+    if (found) {
+      currentUser = found;
+      SHEET_URL = found.sheet_url;
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
+      document.getElementById('userLabel').textContent = user;
+      document.getElementById('loginPassword').value = '';
+      err.textContent = '';
+      initApp();
+    } else {
+      err.textContent = 'Username/Password salah!';
+    }
+  } catch(e) {
+    err.textContent = 'Koneksi bermasalah.';
+  }
+}
+
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ── LOGOUT ──
+function doLogout() {
+  currentUser = null; SHEET_URL = ''; entries = [];
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginUsername').value = '';
+  closeModal('settingsModal');
 }
 
 // ── INIT ──
 function initApp() {
-    const now = new Date();
-    document.getElementById('inputDate').value = now.toISOString().split('T')[0];
-    document.getElementById('inputDesc').placeholder = "dipake buat beli apa duitnya?";
-    renderCats();
-    loadFromSheet();
+  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+  renderCats();
+  loadFromSheet();
 }
 
-function renderCats() {
-    const select = document.getElementById('selectCatExp');
-    if (currentEntryType === 'expense') {
-        select.innerHTML = CATS_EXPENSE.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
-    } else {
-        select.innerHTML = '<option value="apih">👨 Dari Apih</option><option value="lain">✏️ Sumber Lain</option>';
-    }
-}
-
-function setEntryType(type) {
-    currentEntryType = type;
-    document.getElementById('btnExp').classList.toggle('active', type === 'expense');
-    document.getElementById('btnInc').classList.toggle('active', type === 'income');
-    renderCats();
-}
-
-// ── DATA HANDLING ──
+// ── LOAD DATA ──
 async function loadFromSheet() {
-    try {
-        const res = await fetch(SHEET_URL + '?t=' + Date.now());
-        const data = await res.json();
-        entries = data.map(r => ({
-            id: r.id,
-            date: formatDateFromSheet(r.date),
-            type: r.type,
-            catLabel: r.catLabel || '',
-            catIcon: r.catIcon || (r.type === 'income' ? '💵' : '💸'),
-            amount: parseFloat(r.amount) || 0,
-            desc: r.desc || ''
-        }));
-        updateSummary();
-        renderHistory();
-    } catch(e) { showToast('⚠️ Gagal muat data', true); }
-}
-
-async function saveEntry() {
-    const amount = parseInt(document.getElementById('inputAmount').value);
-    const date = document.getElementById('inputDate').value;
-    const desc = document.getElementById('inputDesc').value.trim();
-    const catSelect = document.getElementById('selectCatExp');
-    const customSource = document.getElementById('inputCustomSource').value.trim();
-    
-    // 1. Validasi Dasar
-    if (!amount || !date) { showToast('⚠️ Jumlah & Tanggal wajib diisi!', true); return; }
-
-    // 2. Validasi Khusus Pengeluaran (Deskripsi Wajib)
-    if (currentEntryType === 'expense' && !desc) {
-        showToast('⚠️ Kasih keterangan duitnya buat apa!', true);
-        return;
-    }
-
-    // 3. Validasi Khusus Pemasukan (Sumber Lain Wajib Diisi)
-    let finalCatLabel = catSelect.options[catSelect.selectedIndex].text;
-    if (currentEntryType === 'income' && catSelect.value === 'lain') {
-        if (!customSource) {
-            showToast('⚠️ Sumber lainnya dapet dari mana?', true);
-            return;
-        }
-        finalCatLabel = customSource; // Ganti label 'Sumber Lain' jadi inputan user
-    }
-
-    const entry = {
-        id: Date.now(),
-        type: currentEntryType,
-        date: date,
-        catLabel: currentEntryType === 'income' ? finalCatLabel : finalCatLabel.split(' ').slice(1).join(' '),
-        catIcon: currentEntryType === 'income' ? '💵' : finalCatLabel.split(' ')[0],
-        amount: amount,
-        desc: desc || "-", // Kalau kosong kasih strip (khusus income)
-        inlLabel: currentEntryType === 'expense' ? (selectedINL === 'needs' ? 'Needs' : 'Lifestyle') : 'Income'
-    };
-
-    // ... sisa kode simpan ke sheet (fetch) tetep sama ...
-    // Jangan lupa reset input customSource setelah simpan
-    document.getElementById('inputCustomSource').value = '';
-}
-
-    showToast('💾 Menyimpan...');
-    entries.unshift(entry);
+  try {
+    const res = await fetch(SHEET_URL + '?t=' + Date.now());
+    const data = await res.json();
+    entries = data.map(r => ({
+      id: r.id,
+      date: formatDateFromSheet(r.date),
+      type: r.type,
+      catLabel: r.catLabel || '',
+      catIcon: r.catIcon || (r.type === 'income' ? '💵' : '💸'),
+      inlLabel: r.inlLabel || '',
+      amount: parseFloat(r.amount) || 0,
+      desc: r.desc || ''
+    }));
     updateSummary();
     renderHistory();
-    closeModal('addModal');
+  } catch(e) {
+    showToast('⚠️ Gagal muat data', true);
+  }
+}
 
-    try {
-        await fetch(SHEET_URL, {
-            method: 'POST', mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entry)
-        });
-        showToast('✅ Tersimpan!');
-    } catch(e) { showToast('❌ Gagal ke Sheet', true); }
+// ── SAVE ──
+async function saveEntry() {
+  const amount = parseInt(document.getElementById('inputAmount').value);
+  const date = document.getElementById('inputDate').value;
+  const desc = document.getElementById('inputDesc').value.trim();
+  const catSelect = document.getElementById('selectCatExp');
+  const customSource = document.getElementById('inputCustomSource').value.trim();
+
+  if (!amount || !date) { showToast('⚠️ Jumlah & Tanggal wajib diisi!', true); return; }
+  if (currentEntryType === 'expense' && !desc) { showToast('⚠️ Kasih keterangan duitnya buat apa!', true); return; }
+  if (currentEntryType === 'income' && catSelect.value === 'lain' && !customSource) {
+    showToast('⚠️ Sumber lainnya dari mana?', true); return;
+  }
+
+  let finalCatLabel = catSelect.options[catSelect.selectedIndex].text;
+  let finalCatIcon = '💵';
+
+  if (currentEntryType === 'expense') {
+    const cat = CATS_EXPENSE.find(c => c.id === catSelect.value);
+    finalCatLabel = cat ? cat.label : finalCatLabel;
+    finalCatIcon = cat ? cat.icon : '💸';
+  } else {
+    if (catSelect.value === 'lain') finalCatLabel = customSource;
+  }
+
+  const entry = {
+    id: Date.now(),
+    type: currentEntryType,
+    date,
+    catLabel: finalCatLabel,
+    catIcon: finalCatIcon,
+    amount,
+    desc: desc || '-',
+    inlLabel: currentEntryType === 'expense' ? (selectedINL === 'needs' ? 'Needs' : 'Lifestyle') : 'Income'
+  };
+
+  entries.unshift(entry);
+  updateSummary();
+  renderHistory();
+  closeModal('addModal');
+  document.getElementById('inputAmount').value = '';
+  document.getElementById('inputDesc').value = '';
+  document.getElementById('inputCustomSource').value = '';
+  showToast('💾 Menyimpan...');
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    });
+    showToast('✅ Tersimpan!');
+  } catch(e) {
+    showToast('❌ Gagal ke Sheet', true);
+  }
+}
+
+// ── DELETE ──
+async function deleteEntry(id) {
+  if (!confirm('Hapus?')) return;
+  entries = entries.filter(e => String(e.id) !== String(id));
+  updateSummary();
+  renderHistory();
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', id })
+    });
+  } catch(e) {}
+}
+
+// ── RENDER ──
+function renderCats() {
+  const select = document.getElementById('selectCatExp');
+  if (!select) return;
+  if (currentEntryType === 'expense') {
+    select.innerHTML = CATS_EXPENSE.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
+  } else {
+    select.innerHTML = '<option value="apih">👨 Dari Apih</option><option value="lain">✏️ Sumber Lain</option>';
+  }
 }
 
 function updateSummary() {
-    const income = entries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
-    const expense = entries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-    const balance = income - expense;
-
-    document.getElementById('sumBalance').textContent = formatRp(balance);
-    document.getElementById('sumIncome').textContent = formatRp(income);
-    document.getElementById('sumExpense').textContent = formatRp(expense);
+  const income = entries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
+  const expense = entries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
+  const balance = income - expense;
+  document.getElementById('sumBalance').textContent = formatRp(balance);
+  document.getElementById('sumIncome').textContent = formatRp(income);
+  document.getElementById('sumExpense').textContent = formatRp(expense);
 }
 
 function renderHistory() {
-    const listHome = document.getElementById('historyListHome');
-    const listFull = document.getElementById('historyListFull');
-    
-    // Grouping per tanggal untuk Full History
-    const grouped = {};
-    entries.forEach(e => {
-        if (!grouped[e.date]) grouped[e.date] = [];
-        grouped[e.date].push(e);
+  const listHome = document.getElementById('historyListHome');
+  const listFull = document.getElementById('historyListFull');
+  if (!entries.length) {
+    const empty = '<div style="text-align:center; color:var(--muted); padding:40px 0;">Kosong nih...</div>';
+    listHome.innerHTML = empty; listFull.innerHTML = empty; return;
+  }
+  const grouped = {};
+  entries.forEach(e => {
+    if (!grouped[e.date]) grouped[e.date] = [];
+    grouped[e.date].push(e);
+  });
+  const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+  const html = sortedDates.map(date => {
+    const d = new Date(date + 'T00:00:00');
+    const label = d.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'short'});
+    return `
+      <details open>
+        <summary style="color:var(--muted);font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;padding:10px 5px;cursor:pointer;">${label}</summary>
+        ${grouped[date].map(e => `
+          <div class="neu-card" style="padding:15px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div style="font-size:1.2rem;">${e.catIcon}</div>
+              <div>
+                <div style="font-size:0.9rem;font-weight:600;">${e.desc}</div>
+                <div style="font-size:0.7rem;color:var(--muted);">${e.catLabel}${e.inlLabel ? ' · ' + e.inlLabel : ''}</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:bold;color:${e.type==='income'?'var(--green)':'var(--red)'}">${e.type==='income'?'+':'-'}${formatRp(e.amount)}</div>
+              <div onclick="deleteEntry(${e.id})" style="font-size:0.65rem;color:var(--muted);cursor:pointer;margin-top:4px;">✕ hapus</div>
+            </div>
+          </div>
+        `).join('')}
+      </details>`;
+  }).join('');
+  listHome.innerHTML = html;
+  listFull.innerHTML = html;
+}
+
+// ── FORM HELPERS ──
+function setEntryType(type) {
+  currentEntryType = type;
+  document.getElementById('btnExp').classList.toggle('active', type === 'expense');
+  document.getElementById('btnInc').classList.toggle('active', type === 'income');
+  document.getElementById('labelSection').style.display = type === 'expense' ? 'block' : 'none';
+  document.getElementById('customSourceSection').classList.add('hidden');
+  document.getElementById('inputDesc').placeholder = type === 'expense' ? 'dipake buat beli apa duitnya?' : 'buat keperluan apa? (opsional)';
+  renderCats();
+}
+
+function setLabel(val) {
+  selectedINL = val;
+  document.getElementById('btnNeeds').classList.toggle('active', val === 'needs');
+  document.getElementById('btnLifestyle').classList.toggle('active', val === 'lifestyle');
+}
+
+function checkIncomeSource(val) {
+  const show = currentEntryType === 'income' && val === 'lain';
+  document.getElementById('customSourceSection').classList.toggle('hidden', !show);
+}
+
+// ── SETTINGS ──
+function openSettings() {
+  document.getElementById('settingsModal').classList.remove('hidden');
+  document.getElementById('settingUser').value = currentUser ? currentUser.username : '';
+}
+
+function showPwdFields() {
+  document.getElementById('pwdSection').classList.remove('hidden');
+  document.getElementById('pwdTrigger').classList.add('hidden');
+}
+
+function hidePwdForm() {
+  document.getElementById('pwdSection').classList.add('hidden');
+  document.getElementById('pwdTrigger').classList.remove('hidden');
+  document.getElementById('newPwd').value = '';
+}
+
+async function confirmNewPwd() {
+  const newPass = document.getElementById('newPwd').value.trim();
+  if (!newPass || newPass.length < 4) { showToast('⚠️ Password minimal 4 karakter', true); return; }
+  try {
+    await fetch(ACCOUNTS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: currentUser.username, new_password: newPass })
     });
+    showToast('✅ Password berhasil diubah!');
+    hidePwdForm();
+    closeModal('settingsModal');
+  } catch(e) {
+    showToast('❌ Gagal ubah password', true);
+  }
+}
 
-    const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+// ── MODAL & NAV ──
+function openAddModal() {
+  document.getElementById('addModal').classList.remove('hidden');
+  setEntryType('expense');
+}
 
-    const html = sortedDates.map(date => {
-        const d = new Date(date + 'T00:00:00');
-        const label = d.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'short'});
-        return `
-            <details class="date-group-details" open>
-                <summary class="date-group-summary"><span>${label}</span></summary>
-                ${grouped[date].map(e => `
-                    <div class="neu-card" style="padding: 15px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; gap: 12px; align-items: center;">
-                            <div style="font-size: 1.2rem;">${e.catIcon}</div>
-                            <div>
-                                <div style="font-size: 0.9rem; font-weight: 600;">${e.desc}</div>
-                                <div style="font-size: 0.7rem; color: var(--muted);">${e.catLabel}</div>
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <div style="font-weight: bold; color: ${e.type==='income'?'var(--green)':'var(--red)'}">
-                                ${e.type==='income'?'+':'-'}${formatRp(e.amount)}
-                            </div>
-                            <div onclick="deleteEntry(${e.id})" style="font-size: 0.6rem; color: var(--muted); cursor: pointer;">Hapus</div>
-                        </div>
-                    </div>
-                `).join('')}
-            </details>
-        `;
-    }).join('');
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-    listFull.innerHTML = html || '<div style="text-align:center; color:var(--muted);">Kosong nih...</div>';
-    listHome.innerHTML = html; // Untuk sementara home sama dengan full
+function closeModalOnOut(e, id) { if (e.target.id === id) closeModal(id); }
+
+function switchPanel(panelId, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + panelId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
 }
 
 // ── UTILS ──
 function formatRp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+
 function formatDateFromSheet(val) {
-    let d = new Date(val);
-    if (isNaN(d.getTime())) return val;
-    return d.toISOString().split('T')[0];
+  if (!val) return '';
+  if (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}/)) return val.substring(0, 10);
+  const d = new Date(val);
+  if (!isNaN(d)) return d.toISOString().split('T')[0];
+  return String(val);
 }
+
+let toastTimer;
 function showToast(msg, isWarn=false) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.style.background = isWarn ? 'var(--red)' : 'var(--accent)';
-    t.style.color = isWarn ? 'white' : 'var(--bg)';
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isWarn ? 'var(--red)' : 'var(--accent)';
+  t.style.color = isWarn ? 'white' : '#1A120B';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
-
-// Modal Helpers
-function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
-function openSettings() { 
-    document.getElementById('settingsModal').classList.remove('hidden');
-    document.getElementById('settingUser').value = currentUser.username;
-}
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-function switchPanel(panelId, el) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + panelId).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    el.classList.add('active');
-}
-function doLogout() { location.reload(); }
-// ── FUNGSI TAMBAHAN (FIX ERROR CONSOLE) ──
-
-// Fungsi nutup modal kalau klik area luar (background hitam)
-function closeModalOnOut(e, id) {
-    if (e.target.id === id) closeModal(id);
-}
-
-// Fungsi memunculkan kolom input password baru
-function showPwdFields() {
-    document.getElementById('pwdSection').classList.remove('hidden');
-    document.getElementById('pwdTrigger').classList.add('hidden');
-}
-
-// Fungsi menyembunyikan kembali kolom password (tombol Batal)
-function hidePwdForm() {
-    document.getElementById('pwdSection').classList.add('hidden');
-    document.getElementById('pwdTrigger').classList.remove('hidden');
-    document.getElementById('newPwd').value = '';
-}
-
-// Fungsi umum nutup modal berdasarkan ID
-function closeModal(id) {
-    document.getElementById(id).classList.add('hidden');
-}
-
-// Fungsi konfirmasi ubah password (dipanggil di tombol Update Password)
-async function confirmNewPwd() {
-    const newPass = document.getElementById('newPwd').value.trim();
-    if (!newPass || newPass.length < 4) {
-        showToast('⚠️ Password minimal 4 karakter', true);
-        return;
-    }
-    
-    showToast('💾 Menghubungkan...');
-    try {
-        await fetch(ACCOUNTS_URL, {
-            method: 'POST', mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: currentUser.username, new_password: newPass })
-        });
-        showToast('✅ Password Berhasil Diubah!');
-        hidePwdForm();
-        closeModal('settingsModal');
-    } catch(e) {
-        showToast('❌ Gagal mengubah password', true);
-    }
-}
-function setLabel(val) {
-    selectedINL = val;
-    document.getElementById('btnNeeds').classList.toggle('active', val === 'needs');
-    document.getElementById('btnLifestyle').classList.toggle('active', val === 'lifestyle');
-}
-
-function setEntryType(type) {
-    currentEntryType = type;
-    const descInput = document.getElementById('inputDesc'); // Ambil elemen deskripsi
-    
-    document.getElementById('btnExp').classList.toggle('active', type === 'expense');
-    document.getElementById('btnInc').classList.toggle('active', type === 'income');
-    document.getElementById('labelSection').style.display = (type === 'expense') ? 'block' : 'none';
-    
-    // Logika ganti placeholder
-    if (type === 'expense') {
-        descInput.placeholder = "dipake buat beli apa duitnya?";
-    } else {
-        descInput.placeholder = "dapet duit dari mana nih?";
-    }
-    
-    renderCats();
-}
-
-// Fungsi buat ngecek apakah user milih 'Sumber Lain'
-function checkIncomeSource(val) {
-    const customSection = document.getElementById('customSourceSection');
-    if (currentEntryType === 'income' && val === 'lain') {
-        customSection.classList.remove('hidden');
-    } else {
-        customSection.classList.add('hidden');
-    }
-}
-
-// Update fungsi setEntryType yang lama
-function setEntryType(type) {
-    currentEntryType = type;
-    const descInput = document.getElementById('inputDesc');
-    const customSection = document.getElementById('customSourceSection');
-    
-    document.getElementById('btnExp').classList.toggle('active', type === 'expense');
-    document.getElementById('btnInc').classList.toggle('active', type === 'income');
-    document.getElementById('labelSection').style.display = (type === 'expense') ? 'block' : 'none';
-    
-    // Sembunyiin custom source setiap ganti jenis
-    customSection.classList.add('hidden');
-
-    if (type === 'expense') {
-        descInput.placeholder = "dipake buat beli apa duitnya?";
-    } else {
-        descInput.placeholder = "buat keperluan apa duit ini? (opsional)";
-    }
-    renderCats();
-}
-  
 </script>
 </body>
 </html>
