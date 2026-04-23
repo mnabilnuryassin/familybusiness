@@ -186,6 +186,13 @@
         <div id="formFields">
             <label class="form-label">Category</label>
             <select id="selectCatExp" class="neu-inset"></select>
+<div id="labelSection">
+    <label class="form-label">Label (Needs / Lifestyle)</label>
+    <div class="type-grid" style="margin-bottom: 0;">
+        <div id="btnNeeds" class="type-btn" onclick="setLabel('needs')">🏡 Needs</div>
+        <div id="btnLifestyle" class="type-btn" onclick="setLabel('lifestyle')">✨ Lifestyle</div>
+    </div>
+</div>          
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                 <div>
@@ -256,6 +263,7 @@ let currentUser = null;
 let SHEET_URL = '';
 let currentEntryType = 'expense';
 let entries = [];
+let selectedINL = 'needs'; // Default awal  
 let viewMonth = new Date().getMonth();
 let viewYear = new Date().getFullYear();
 
@@ -344,7 +352,7 @@ async function saveEntry() {
         catIcon: selectedCatText.split(' ')[0],
         amount: amount,
         desc: desc,
-        inlLabel: currentEntryType === 'expense' ? 'Needs' : 'Income' // Default label
+        inlLabel: currentEntryType === 'expense' ? (selectedINL === 'needs' ? 'Needs' : 'Lifestyle') : 'Income',
     };
 
     showToast('💾 Menyimpan...');
@@ -494,6 +502,20 @@ async function confirmNewPwd() {
         showToast('❌ Gagal mengubah password', true);
     }
 }
+function setLabel(val) {
+    selectedINL = val;
+    document.getElementById('btnNeeds').classList.toggle('active', val === 'needs');
+    document.getElementById('btnLifestyle').classList.toggle('active', val === 'lifestyle');
+}
+
+// Update fungsi setEntryType lu biar Label Section ilang pas milih Income
+function setEntryType(type) {
+    currentEntryType = type;
+    document.getElementById('btnExp').classList.toggle('active', type === 'expense');
+    document.getElementById('btnInc').classList.toggle('active', type === 'income');
+    document.getElementById('labelSection').style.display = (type === 'expense') ? 'block' : 'none';
+    renderCats();
+}  
 </script>
 </body>
 </html>
