@@ -121,6 +121,18 @@ body {
   .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
   .type-btn { padding: 12px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); cursor: pointer; text-align: center; font-weight: bold; }
   .type-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-muted); }
+  /* Pastikan teks di elemen aksen (kuning) selalu berwarna gelap */
+.nav-add, 
+.nav-item.active, 
+.type-btn.active, 
+.btn-submit {
+    color: #1A120B !important; /* Warna hitam coklat pekat */
+}
+
+/* Jika ada icon di dalamnya, pastikan warnanya ikut gelap */
+.nav-add span, .type-btn.active span {
+    color: #1A120B !important;
+}
 </style>
 </head>
 <body>
