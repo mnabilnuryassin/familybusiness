@@ -6,9 +6,9 @@
 <title>CULT Finance Premium</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-  --bg-dark: #120A05;    /* Coklat sangat gelap (pinggiran) */
-  --bg-light: #2A1A10;   /* Coklat agak terang (pusat gradasi) */
+:root {
+  --bg-dark: #0A0705;    /* Hitam pekat hampir total */
+  --bg-light: #3D261A;   /* Coklat tembaga (lebih terang buat kontras) */
   --card: #2C1A11;
   --accent: #FFEDAE;
   --text: #FAF7F2;
@@ -20,10 +20,11 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'DM Sans', sans-serif; }
 
- body {
-  /* Efek Gradasi Radial ala Foto Contoh */
-  background: radial-gradient(circle at center, var(--bg-light) 0%, var(--bg-dark) 70%);
-  background-attachment: fixed; 
+body {
+  /* Gradasi kontras tinggi: Terang di pusat, langsung gelap ke pinggir */
+  background: radial-gradient(circle at 50% 35%, var(--bg-light) 0%, var(--bg-dark) 55%);
+  background-attachment: fixed;
+  background-color: var(--bg-dark); /* Fallback warna gelap */
   
   color: var(--text);
   min-height: 100vh;
