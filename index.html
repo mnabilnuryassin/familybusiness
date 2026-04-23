@@ -232,32 +232,221 @@
 <div class="toast" id="toast"></div>
 
 <script>
-   let currentEntryType = 'expense';
+// ── CONFIG & STATE ──
+const CATS_EXPENSE = [
+  { id:'makanan', label:'Makanan & Minuman', icon:'🍱' },
+  { id:'restoran', label:'Restoran & Take Out', icon:'🍽️' },
+  { id:'kebersihan', label:'Kebersihan & Perawatan', icon:'🧴' },
+  { id:'rumah', label:'Kebutuhan Rumah Tangga', icon:'🏠' },
+  { id:'transportasi', label:'Transportasi', icon:'🚗' },
+  { id:'pakaian', label:'Pakaian & Laundry', icon:'👗' },
+  { id:'hiburan', label:'Hiburan', icon:'🎬' },
+  { id:'kesehatan', label:'Kesehatan', icon:'💊' },
+  { id:'pendidikan', label:'Pendidikan', icon:'📚' },
+  { id:'komunikasi', label:'Komunikasi', icon:'📱' },
+  { id:'hadiah', label:'Hadiah & Acara Sosial', icon:'🎁' },
+  { id:'hutang', label:'Hutang', icon:'📤' },
+  { id:'piutang', label:'Piutang', icon:'📥' },
+];
 
-    function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
-    function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); }
+const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
+const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+let currentUser = null;
+let SHEET_URL = '';
+let currentEntryType = 'expense';
+let entries = [];
+let viewMonth = new Date().getMonth();
+let viewYear = new Date().getFullYear();
+
+// ── LOGIN ──
+async function doLogin() {
+    const user = document.getElementById('loginUsername').value.trim();
+    const pass = document.getElementById('loginPassword').value.trim();
+    const err = document.getElementById('loginError');
+    if (!user || !pass) { err.textContent = 'Isi dulu bro!'; return; }
+
+    err.textContent = 'Memverifikasi...';
+    try {
+        const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
+        const accounts = await res.json();
+        const found = accounts.find(a => a.username === user && a.password === pass);
+        
+        if (found) {
+            currentUser = found;
+            SHEET_URL = found.sheet_url;
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
+            document.getElementById('userLabel').textContent = user;
+            initApp();
+        } else { err.textContent = 'Username/Password salah!'; }
+    } catch(e) { err.textContent = 'Koneksi bermasalah.'; }
+}
+
+// ── INIT ──
+function initApp() {
+    const now = new Date();
+    document.getElementById('inputDate').value = now.toISOString().split('T')[0];
+    renderCats();
+    loadFromSheet();
+}
+
+function renderCats() {
+    const select = document.getElementById('selectCatExp');
+    if (currentEntryType === 'expense') {
+        select.innerHTML = CATS_EXPENSE.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
+    } else {
+        select.innerHTML = '<option value="apih">👨 Dari Apih</option><option value="lain">✏️ Sumber Lain</option>';
+    }
+}
+
+function setEntryType(type) {
+    currentEntryType = type;
+    document.getElementById('btnExp').classList.toggle('active', type === 'expense');
+    document.getElementById('btnInc').classList.toggle('active', type === 'income');
+    renderCats();
+}
+
+// ── DATA HANDLING ──
+async function loadFromSheet() {
+    try {
+        const res = await fetch(SHEET_URL + '?t=' + Date.now());
+        const data = await res.json();
+        entries = data.map(r => ({
+            id: r.id,
+            date: formatDateFromSheet(r.date),
+            type: r.type,
+            catLabel: r.catLabel || '',
+            catIcon: r.catIcon || (r.type === 'income' ? '💵' : '💸'),
+            amount: parseFloat(r.amount) || 0,
+            desc: r.desc || ''
+        }));
+        updateSummary();
+        renderHistory();
+    } catch(e) { showToast('⚠️ Gagal muat data', true); }
+}
+
+async function saveEntry() {
+    const amount = parseInt(document.getElementById('inputAmount').value);
+    const date = document.getElementById('inputDate').value;
+    const desc = document.getElementById('inputDesc').value.trim();
+    const catSelect = document.getElementById('selectCatExp');
+    const selectedCatText = catSelect.options[catSelect.selectedIndex].text;
+
+    if (!amount || !date || !desc) { showToast('⚠️ Lengkapi data!', true); return; }
+
+    const entry = {
+        id: Date.now(),
+        type: currentEntryType,
+        date: date,
+        catLabel: selectedCatText.split(' ').slice(1).join(' '),
+        catIcon: selectedCatText.split(' ')[0],
+        amount: amount,
+        desc: desc,
+        inlLabel: currentEntryType === 'expense' ? 'Needs' : 'Income' // Default label
+    };
+
+    showToast('💾 Menyimpan...');
+    entries.unshift(entry);
+    updateSummary();
+    renderHistory();
+    closeModal('addModal');
+
+    try {
+        await fetch(SHEET_URL, {
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entry)
+        });
+        showToast('✅ Tersimpan!');
+    } catch(e) { showToast('❌ Gagal ke Sheet', true); }
+}
+
+function updateSummary() {
+    const income = entries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
+    const expense = entries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
+    const balance = income - expense;
+
+    document.getElementById('sumBalance').textContent = formatRp(balance);
+    document.getElementById('sumIncome').textContent = formatRp(income);
+    document.getElementById('sumExpense').textContent = formatRp(expense);
+}
+
+function renderHistory() {
+    const listHome = document.getElementById('historyListHome');
+    const listFull = document.getElementById('historyListFull');
     
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-    function closeModalOnOut(e, id) { if(e.target.id === id) closeModal(id); }
+    // Grouping per tanggal untuk Full History
+    const grouped = {};
+    entries.forEach(e => {
+        if (!grouped[e.date]) grouped[e.date] = [];
+        grouped[e.date].push(e);
+    });
 
-    function setEntryType(type) {
-        currentEntryType = type;
-        document.getElementById('btnExp').classList.toggle('active', type === 'expense');
-        document.getElementById('btnInc').classList.toggle('active', type === 'income');
-        // Logic ganti field kategori bisa ditaruh di sini nanti
-    }
+    const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
 
-    function showPwdFields() {
-        document.getElementById('pwdSection').classList.remove('hidden');
-        document.getElementById('pwdTrigger').classList.add('hidden');
-    }
+    const html = sortedDates.map(date => {
+        const d = new Date(date + 'T00:00:00');
+        const label = d.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'short'});
+        return `
+            <details class="date-group-details" open>
+                <summary class="date-group-summary"><span>${label}</span></summary>
+                ${grouped[date].map(e => `
+                    <div class="neu-card" style="padding: 15px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div style="font-size: 1.2rem;">${e.catIcon}</div>
+                            <div>
+                                <div style="font-size: 0.9rem; font-weight: 600;">${e.desc}</div>
+                                <div style="font-size: 0.7rem; color: var(--muted);">${e.catLabel}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: bold; color: ${e.type==='income'?'var(--green)':'var(--red)'}">
+                                ${e.type==='income'?'+':'-'}${formatRp(e.amount)}
+                            </div>
+                            <div onclick="deleteEntry(${e.id})" style="font-size: 0.6rem; color: var(--muted); cursor: pointer;">Hapus</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </details>
+        `;
+    }).join('');
 
-    // Login Bypass buat testing
-    function doLogin() {
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('mainApp').classList.remove('hidden');
-        renderCats(); // Nanti dipanggil di Tahap 3
-    }
+    listFull.innerHTML = html || '<div style="text-align:center; color:var(--muted);">Kosong nih...</div>';
+    listHome.innerHTML = html; // Untuk sementara home sama dengan full
+}
+
+// ── UTILS ──
+function formatRp(n) { return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+function formatDateFromSheet(val) {
+    let d = new Date(val);
+    if (isNaN(d.getTime())) return val;
+    return d.toISOString().split('T')[0];
+}
+function showToast(msg, isWarn=false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = isWarn ? 'var(--red)' : 'var(--accent)';
+    t.style.color = isWarn ? 'white' : 'var(--bg)';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Modal Helpers
+function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
+function openSettings() { 
+    document.getElementById('settingsModal').classList.remove('hidden');
+    document.getElementById('settingUser').value = currentUser.username;
+}
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+function switchPanel(panelId, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + panelId).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+}
+function doLogout() { location.reload(); }
 </script>
 </body>
 </html>
