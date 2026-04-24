@@ -7,13 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-deep: #2D3E40;       /* Dark Teal Background */
-  --card-sage: #97B299;     /* Soft Green */
-  --card-terra: #D9835D;    /* Terracotta */
-  --card-sand: #E5B299;     /* Peach/Sand */
-  --accent-teal: #4FB0AC;   /* Bright Teal */
-  --text-dark: #2D3E40;     
-  --text-white: #FAF7F2;    
+  --bg-deep: #2D3E40;
+  --card-sage: #97B299;
+  --card-terra: #D9835D;
+  --card-sand: #E5B299;
+  --accent-teal: #4FB0AC;
+  --text-dark: #2D3E40;
+  --text-white: #FAF7F2;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -27,58 +27,35 @@ body {
   position: relative;
 }
 
-/* DEKORASI BACKGROUND (Shape Organik) */
+/* BACKGROUND DECORATION */
 body::before {
-  content: "";
-  position: fixed;
-  top: -50px; left: -50px;
-  width: 250px; height: 250px;
-  background: var(--card-sage);
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.1;
-  z-index: -1;
+  content: ""; position: fixed; top: -50px; left: -50px;
+  width: 250px; height: 250px; background: var(--card-sage);
+  border-radius: 50%; filter: blur(80px); opacity: 0.1; z-index: -1;
 }
 
-body::after {
-  content: "";
-  position: fixed;
-  bottom: 10%; right: -50px;
-  width: 300px; height: 300px;
-  background: var(--card-terra);
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.15;
-  z-index: -1;
-}
-
-/* FLAT CARD STYLE (Clean & Soft) */
+/* FLAT CARD STYLE */
 .clay-card {
   background: var(--card-sage);
   border-radius: 35px;
   padding: 22px;
   border: none;
-  /* Bayangan flat yang lembut (bukan emboss) */
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
   color: var(--text-dark);
   margin-bottom: 18px;
-  transition: transform 0.2s ease;
 }
 
-.clay-card:active { transform: scale(0.97); }
-
-/* VARIASI WARNA */
 .bg-sage { background-color: var(--card-sage); }
 .bg-terra { background-color: var(--card-terra); }
 .bg-sand { background-color: var(--card-sand); }
 
-/* ACTIVITY SECTION (With Shape Background) */
+/* SECTION ACTIVITY (Sesuai Request) */
 .activity-section {
   background: rgba(255, 255, 255, 0.04);
   margin: 25px -20px 0;
   padding: 35px 20px;
   border-radius: 45px 45px 0 0;
-  position: relative;
+  min-height: 400px;
 }
 
 .section-title {
@@ -90,17 +67,15 @@ body::after {
   gap: 10px;
 }
 
-/* NAVIGATION (Floating Flat) */
+/* NAVBAR */
 .bottom-nav {
   position: fixed; bottom: 30px; left: 20px; right: 20px;
-  background: #FAF7F2;
-  height: 75px; border-radius: 35px;
+  background: #FAF7F2; height: 75px; border-radius: 35px;
   display: flex; justify-content: space-around; align-items: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-  z-index: 1000;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 1000;
 }
 
-.nav-item { color: #A0A0A0; font-size: 1.6rem; cursor: pointer; transition: 0.3s; }
+.nav-item { color: #A0A0A0; font-size: 1.6rem; cursor: pointer; }
 .nav-item.active { color: var(--accent-teal); }
 
 .nav-add { 
@@ -112,44 +87,33 @@ body::after {
   border: 6px solid var(--bg-deep);
 }
 
-/* MODAL & INPUTS */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: flex-end; }
-.modal-content { background: #FAF7F2; width: 100%; border-radius: 45px 45px 0 0; padding: 40px 25px; color: var(--text-dark); animation: slideUp 0.4s ease; }
-
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-.neu-inset {
-  background: #EAEAEA;
-  border: none; border-radius: 20px;
-  padding: 18px; width: 100%;
-  font-size: 1rem; color: var(--text-dark);
-  margin-top: 5px; outline: none;
-}
-
-.form-label { display: block; font-size: 0.75rem; font-weight: 800; opacity: 0.6; text-transform: uppercase; margin: 15px 0 5px 5px; }
-
-.type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
-.type-btn { padding: 15px; border-radius: 20px; background: #EAEAEA; font-weight: 800; border: none; cursor: pointer; text-align: center; }
-.type-btn.active { background: var(--accent-teal); color: white; }
-
-.btn-submit { width: 100%; padding: 18px; background: var(--bg-deep); color: white; border: none; border-radius: 22px; font-weight: 800; margin-top: 25px; cursor: pointer; }
-
-/* UTILITY */
 .container { padding: 0 20px; }
+.panel { display: none; }
+.panel.active { display: block; }
 .hidden { display: none !important; }
-.toast { position: fixed; bottom: 125px; left: 50%; transform: translateX(-50%); background: var(--accent-teal); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; opacity: 0; pointer-events: none; transition: 0.3s; }
-.toast.show { opacity: 1; }
 
-summary::-webkit-details-marker { display: none; }
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: flex-end; }
+.modal-content { background: #FAF7F2; width: 100%; border-radius: 45px 45px 0 0; padding: 40px 25px; color: var(--text-dark); }
+
+.neu-inset { background: #EAEAEA; border: none; border-radius: 20px; padding: 18px; width: 100%; margin-top: 5px; outline: none; }
+.type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+.type-btn { padding: 15px; border-radius: 20px; background: #EAEAEA; font-weight: 800; border: none; text-align: center; }
+.type-btn.active { background: var(--accent-teal); color: white; }
+.btn-submit { width: 100%; padding: 18px; background: var(--bg-deep); color: white; border: none; border-radius: 22px; font-weight: 800; margin-top: 25px; }
+
+.toast { position: fixed; bottom: 125px; left: 50%; transform: translateX(-50%); background: var(--accent-teal); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; opacity: 0; transition: 0.3s; }
+.toast.show { opacity: 1; }
+summary { list-style: none; }
 </style>
 </head>
 <body>
 
 <div id="loginScreen" class="container" style="padding-top: 100px; text-align: center;">
     <div style="font-size: 4.5rem; margin-bottom: 20px;">🍯</div>
-    <h1 style="color: var(--card-sand); font-weight: 800; font-size: 2.2rem;">Yasiin Family</h1>
+    <h1 style="color: var(--card-sand); font-weight: 800;">Yasiin Family</h1>
     <p style="opacity: 0.5; margin-bottom: 40px;">High Tech, High Love</p>
-    <div class="clay-card" style="background: white; padding: 30px 20px;">
+    <div class="clay-card" style="background: white;">
         <input type="text" id="loginUsername" class="neu-inset" placeholder="Username" style="margin-bottom: 15px;">
         <input type="password" id="loginPassword" class="neu-inset" placeholder="Password">
         <div id="loginError" style="color: #D9835D; font-size: 0.8rem; margin-top: 10px;"></div>
@@ -171,8 +135,8 @@ summary::-webkit-details-marker { display: none; }
 
     <div id="panel-home" class="panel active container">
         <div class="clay-card bg-sand" style="text-align: center; padding: 40px 20px; margin-top: 25px;">
-            <div style="font-size: 0.75rem; font-weight: 800; opacity: 0.6; letter-spacing: 1px;">TOTAL BALANCE (SALDO)</div>
-            <div id="sumBalance" style="font-size: 2.6rem; font-weight: 900; letter-spacing: -1.5px; margin: 10px 0;">Rp 0</div>
+            <div style="font-size: 0.75rem; font-weight: 800; opacity: 0.6; letter-spacing: 1px;">TOTAL BALANCE</div>
+            <div id="sumBalance" style="font-size: 2.6rem; font-weight: 900; letter-spacing: -1.5px;">Rp 0</div>
             <div style="display: flex; justify-content: center; gap: 25px; font-weight: 800; margin-top: 15px;">
                 <div style="color: #2D3E40; font-size: 0.9rem;">↑ <span id="sumIncome">0</span></div>
                 <div style="color: #2D3E40; font-size: 0.9rem;">↓ <span id="sumExpense">0</span></div>
@@ -180,15 +144,13 @@ summary::-webkit-details-marker { display: none; }
         </div>
 
         <div class="activity-section">
-            <h3 class="section-title">Today's Activity <span style="font-size: 0.65rem; background: var(--accent-teal); color: white; padding: 5px 12px; border-radius: 20px; margin-left: 5px;">HARI INI</span></h3>
-            <div id="historyListHome"></div>
-        </div>
+            <h3 class="section-title">Today's Activity <span style="font-size: 0.6rem; background: var(--accent-teal); color: white; padding: 4px 10px; border-radius: 20px;">HARI INI</span></h3>
+            <div id="historyListHome"></div> </div>
     </div>
 
     <div id="panel-history" class="panel container">
         <h2 style="margin: 30px 0 20px; font-weight: 800; font-size: 1.8rem; color: var(--card-sand);">Full History (Riwayat)</h2>
-        <div id="historyListFull"></div>
-    </div>
+        <div id="historyListFull"></div> </div>
     
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchPanel('home', this)">🏠</div>
@@ -199,40 +161,19 @@ summary::-webkit-details-marker { display: none; }
 
 <div id="addModal" class="modal-overlay hidden" onclick="closeModalOnOut(event, 'addModal')">
     <div class="modal-content">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h2 style="font-weight: 800;">New Record</h2>
-            <div onclick="closeModal('addModal')" style="font-size: 1.5rem; opacity: 0.3; cursor: pointer;">✕</div>
-        </div>
-        
+        <h2 style="font-weight: 800; margin-bottom: 20px;">New Record</h2>
         <div class="type-grid">
-            <div id="btnExp" class="type-btn active" onclick="setEntryType('expense')">💸 Out (Keluar)</div>
-            <div id="btnInc" class="type-btn" onclick="setEntryType('income')">💵 In (Masuk)</div>
+            <div id="btnExp" class="type-btn active" onclick="setEntryType('expense')">💸 Out</div>
+            <div id="btnInc" class="type-btn" onclick="setEntryType('income')">💵 In</div>
         </div>
-
-        <label class="form-label">Category (Kategori)</label>
-        <select id="selectCatExp" class="neu-inset" onchange="checkIncomeSource(this.value)"></select>
-        
-        <div id="customSourceSection" class="hidden" style="margin-top: 15px;">
-            <label class="form-label">Specific Source (Sumber)</label>
-            <input type="text" id="inputCustomSource" class="neu-inset" placeholder="Dikasih siapa? / Sumber lainnya">
+        <label style="display:block; font-size:0.7rem; font-weight:800; margin-top:15px; opacity:0.5;">CATEGORY</label>
+        <select id="selectCatExp" class="neu-inset"></select>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+            <div><label style="font-size:0.7rem; font-weight:800; opacity:0.5;">AMOUNT</label><input type="number" id="inputAmount" class="neu-inset"></div>
+            <div><label style="font-size:0.7rem; font-weight:800; opacity:0.5;">DATE</label><input type="date" id="inputDate" class="neu-inset"></div>
         </div>
-
-        <div id="labelSection">
-            <label class="form-label">Tag (Tipe Kebutuhan)</label>
-            <div class="type-grid">
-                <div id="btnNeeds" class="type-btn active" onclick="setLabel('needs')">🏡 Needs</div>
-                <div id="btnLifestyle" class="type-btn" onclick="setLabel('lifestyle')">✨ Life</div>
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div><label class="form-label">Amount (Jumlah)</label><input type="number" id="inputAmount" class="neu-inset"></div>
-            <div><label class="form-label">Date (Tanggal)</label><input type="date" id="inputDate" class="neu-inset"></div>
-        </div>
-
-        <label class="form-label">Note (Keterangan)</label>
+        <label style="display:block; font-size:0.7rem; font-weight:800; margin-top:15px; opacity:0.5;">DESCRIPTION</label>
         <textarea id="inputDesc" class="neu-inset" style="height: 70px; resize: none;"></textarea>
-        
         <button onclick="saveEntry()" class="btn-submit">Confirm Transaction</button>
     </div>
 </div>
@@ -240,26 +181,19 @@ summary::-webkit-details-marker { display: none; }
 <div class="toast" id="toast"></div>
 
 <script>
-// --- CONFIG & STATE ---
-let currentUser = null, SHEET_URL = '', entries = [], currentEntryType = 'expense', selectedINL = 'needs';
+let currentUser = null, SHEET_URL = '', entries = [], currentEntryType = 'expense';
 
 const CATS_EXPENSE = [
   { id:'makanan', label:'Food & Drink (Makan)', icon:'🍱' },
   { id:'restoran', label:'Dining Out (Jajan)', icon:'🍽️' },
-  { id:'kebersihan', label:'Hygiene (Kebersihan)', icon:'🧴' },
   { id:'rumah', label:'Household (Rumah)', icon:'🏠' },
   { id:'transportasi', label:'Travel (Transport)', icon:'🚗' },
-  { id:'pakaian', label:'Apparel (Baju)', icon:'👗' },
-  { id:'hiburan', label:'Entertainment (Hiburan)', icon:'🎬' },
   { id:'kesehatan', label:'Medical (Kesehatan)', icon:'💊' },
-  { id:'pendidikan', label:'Study (Pendidikan)', icon:'📚' },
-  { id:'komunikasi', label:'Internet (Kuota/Pulsa)', icon:'📱' },
-  { id:'hadiah', label:'Gift (Kado/Sosial)', icon:'🎁' }
+  { id:'hiburan', label:'Entertainment (Hiburan)', icon:'🎬' }
 ];
 
 const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
 
-// --- FUNCTIONS ---
 async function doLogin() {
     const user = document.getElementById('loginUsername').value.trim();
     const pass = document.getElementById('loginPassword').value.trim();
@@ -277,14 +211,13 @@ async function doLogin() {
             document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
             document.getElementById('userLabel').textContent = user;
             initApp();
-        } else { err.textContent = 'Akun salah bro!'; }
+        } else { err.textContent = 'Invalid account'; }
     } catch(e) { err.textContent = 'Server Error'; }
 }
 
 function initApp() {
     document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
-    setEntryType('expense');
-    loadFromSheet();
+    setEntryType('expense'); loadFromSheet();
 }
 
 async function loadFromSheet() {
@@ -292,16 +225,12 @@ async function loadFromSheet() {
         const res = await fetch(SHEET_URL + '?t=' + Date.now());
         const data = await res.json();
         entries = data.map(r => ({
-            id: r.id, 
-            date: r.date.split('T')[0], 
-            type: r.type, 
-            catLabel: r.catLabel, 
-            catIcon: r.catIcon || '💰', 
-            amount: parseFloat(r.amount), 
-            desc: r.desc 
+            id: r.id, date: r.date.split('T')[0], type: r.type, 
+            catLabel: r.catLabel, catIcon: r.catIcon || '💰', 
+            amount: parseFloat(r.amount), desc: r.desc 
         }));
         updateSummary(); renderHistory();
-    } catch(e) { console.error(e); }
+    } catch(e) {}
 }
 
 function renderHistory() {
@@ -309,68 +238,50 @@ function renderHistory() {
     const listFull = document.getElementById('historyListFull');
     const today = new Date().toISOString().split('T')[0];
 
-    // 1. FILTER UNTUK HOME (HANYA HARI INI)
+    // Filter khusus hari ini (Today)
     const todayEntries = entries.filter(e => e.date === today);
 
-    // 2. GROUPING UNTUK FULL HISTORY (SEMUA DATA)
+    // Grouping semua data (Full History)
     const grouped = {};
-    entries.forEach(e => { 
-        if (!grouped[e.date]) grouped[e.date] = []; 
-        grouped[e.date].push(e); 
-    });
+    entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
     const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
 
     const colors = ['bg-sage', 'bg-terra', 'bg-sand'];
-
-    // Template kartu flat
     const cardHTML = (e, i) => `
         <div class="clay-card ${colors[i % 3]}">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; gap:15px; align-items:center;">
                     <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem;">${e.catIcon}</div>
                     <div>
-                        <div style="font-weight:800; font-size:1rem; color:var(--text-dark);">${e.desc}</div>
-                        <div style="font-size:0.75rem; font-weight:600; opacity:0.6; color:var(--text-dark);">${e.catLabel}</div>
+                        <div style="font-weight:800; font-size:1rem;">${e.desc}</div>
+                        <div style="font-size:0.75rem; font-weight:600; opacity:0.6;">${e.catLabel}</div>
                     </div>
                 </div>
-                <div style="font-weight:900; font-size:1.1rem; color:var(--text-dark);">
-                    ${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}
-                </div>
+                <div style="font-weight:900; font-size:1.1rem;">${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}</div>
             </div>
         </div>`;
 
-    // ISI LIST DI HOME (Today Only)
-    listHome.innerHTML = todayEntries.length > 0 
-        ? todayEntries.map(cardHTML).join('') 
-        : `<div style="text-align:center; opacity:0.3; padding:40px; font-weight:600;">
-            No activity today<br><span style="font-size:0.8rem;">(Belum ada transaksi hari ini)</span>
-           </div>`;
+    // Render Home (Today's Activity)
+    listHome.innerHTML = todayEntries.length ? todayEntries.map(cardHTML).join('') : '<div style="text-align:center; opacity:0.3; padding:40px;">Belum ada transaksi hari ini</div>';
 
-    // ISI LIST DI TAB HISTORY (Full Data with Collapse)
+    // Render Tab History (Full Data)
     listFull.innerHTML = sortedDates.map(date => {
         const isToday = date === today;
-        const dateObj = new Date(date);
-        const formattedDate = dateObj.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'short' });
-        
         return `
-            <details style="margin-bottom:15px;" ${isToday ? 'open' : ''}>
-                <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:10px 0; display:flex; justify-content:space-between; align-items:center; list-style:none;">
-                    <span>📅 ${isToday ? 'Today (Hari Ini)' : formattedDate}</span>
+            <details style="margin-bottom:12px;" ${isToday ? 'open' : ''}>
+                <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 0; display:flex; justify-content:space-between; align-items:center;">
+                    <span>📅 ${isToday ? 'Today (Hari Ini)' : date}</span>
                     <span style="font-size:0.7rem; opacity:0.5;">DETAIL ▾</span>
                 </summary>
-                <div style="margin-top:10px;">
-                    ${grouped[date].map(cardHTML).join('')}
-                </div>
+                <div style="margin-top:10px;">${grouped[date].map(cardHTML).join('')}</div>
             </details>`;
-    }).join('') || '<div style="text-align:center; opacity:0.3; padding:40px;">No transaction history.</div>';
+    }).join('');
 }
 
 function setEntryType(t) {
     currentEntryType = t;
     document.getElementById('btnExp').classList.toggle('active', t==='expense');
     document.getElementById('btnInc').classList.toggle('active', t==='income');
-    document.getElementById('labelSection').style.display = t==='expense' ? 'block' : 'none';
-    document.getElementById('customSourceSection').classList.add('hidden');
     renderCats();
 }
 
@@ -378,7 +289,7 @@ function renderCats() {
     const s = document.getElementById('selectCatExp');
     s.innerHTML = currentEntryType==='expense' ? 
         CATS_EXPENSE.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('') :
-        '<option value="apih">👨 From Apih</option><option value="lain">✏️ Others (Lainnya)</option>';
+        '<option value="apih">👨 From Apih</option><option value="lain">✏️ Others</option>';
 }
 
 async function saveEntry() {
@@ -387,15 +298,14 @@ async function saveEntry() {
     const desc = document.getElementById('inputDesc').value.trim();
     const catSelect = document.getElementById('selectCatExp');
 
-    if (!amount || !date || (currentEntryType==='expense' && !desc)) { showToast('⚠️ Lengkapi data!'); return; }
-
+    if (!amount || !date) { showToast('⚠️ Data tidak lengkap!'); return; }
+    
     let catLabel = catSelect.options[catSelect.selectedIndex].text;
     const entry = {
         id: Date.now(), type: currentEntryType, date,
         catLabel: currentEntryType==='income' ? catLabel : catLabel.split(' ').slice(1).join(' '),
         catIcon: currentEntryType==='income' ? '💵' : catLabel.split(' ')[0],
         amount, desc: desc || "-",
-        inlLabel: currentEntryType==='expense' ? (selectedINL==='needs' ? 'Needs' : 'Lifestyle') : 'Income'
     };
 
     showToast('💾 Saving...');
@@ -406,8 +316,7 @@ async function saveEntry() {
 function updateSummary() {
     const inc = entries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
     const exp = entries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-    const oldBalance = parseInt(document.getElementById('sumBalance').textContent.replace(/\D/g,'')) || 0;
-    animateValue('sumBalance', oldBalance, (inc - exp), 600);
+    animateValue('sumBalance', 0, (inc - exp), 500);
     document.getElementById('sumIncome').textContent = inc.toLocaleString('id-ID');
     document.getElementById('sumExpense').textContent = exp.toLocaleString('id-ID');
 }
@@ -426,8 +335,6 @@ function animateValue(id, start, end, duration) {
 }
 
 function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
-function checkIncomeSource(v) { document.getElementById('customSourceSection').classList.toggle('hidden', !(currentEntryType==='income' && v==='lain')); }
-function setLabel(v) { selectedINL=v; document.getElementById('btnNeeds').classList.toggle('active', v==='needs'); document.getElementById('btnLifestyle').classList.toggle('active', v==='lifestyle'); }
 function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 function closeModalOnOut(e, id) { if(e.target.id === id) closeModal(id); }
