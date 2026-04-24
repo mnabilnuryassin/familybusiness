@@ -255,6 +255,23 @@ summary { list-style: none; }
   </div>
 </div>
 
+<div id="deleteModal" class="modal-overlay hidden" onclick="closeModalOnOut(event, 'deleteModal')">
+    <div class="modal-content" style="background: #FAF7F2;">
+        <h2 style="font-weight: 800; color: var(--card-terra); margin-bottom: 10px;">Hapus Data?</h2>
+        <p style="font-size: 0.85rem; opacity: 0.6; margin-bottom: 20px;">Data tidak akan hilang, hanya ditandai sebagai 'Dihapus'.</p>
+        
+        <label class="form-label">Alasan Penghapusan (Reason)</label>
+        <textarea id="deleteReason" class="neu-inset" style="height: 80px; resize: none; background: #EAEAEA; color: var(--text-dark);" placeholder="Misal: Salah input, ganti nominal..."></textarea>
+        
+        <input type="hidden" id="deleteTargetId">
+        
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-top: 25px;">
+            <button onclick="closeModal('deleteModal')" class="type-btn">Batal</button>
+            <button onclick="processDelete()" class="btn-submit" style="margin-top: 0; background: var(--card-terra);">Konfirmasi Hapus</button>
+        </div>
+    </div>
+</div>
+
 <!-- SETTINGS MODAL -->
 <div id="settingsModal" class="modal-overlay hidden" onclick="closeModalOnOut(event,'settingsModal')">
   <div class="modal-content">
@@ -381,32 +398,19 @@ function initApp() {
   loadFromSheet();
 }
 
-// ── LOAD ──
+// Update juga loadFromSheet supaya ngambil data status & reason
 async function loadFromSheet() {
-  document.getElementById('historyListHome').innerHTML = '<div class="loading-state">⏳ Memuat data...</div>';
-  document.getElementById('historyListFull').innerHTML = '<div class="loading-state">⏳ Memuat data...</div>';
-  try {
-    const res  = await fetch(SHEET_URL + '?t=' + Date.now());
-    const data = await res.json();
-    entries = data.map(r => ({
-      id:       r.id,
-      date:     formatDateFromSheet(r.date),
-      type:     r.type,
-      catLabel: r.catLabel  || '',
-      catIcon:  r.catIcon   || (r.type === 'income' ? '💵' : '💸'),
-      inlLabel: r.inlLabel  || '',
-      amount:   parseFloat(r.amount) || 0,
-      desc:     r.desc || '',
-      status:   r.status || '',
-      reason:   r.reason || ''
-    }));
-    updateSummary();
-    renderHistory();
-  } catch(e) {
-    showToast('⚠️ Gagal muat data');
-    document.getElementById('historyListHome').innerHTML = '<div class="loading-state">Gagal memuat. Cek koneksi.</div>';
-    document.getElementById('historyListFull').innerHTML = '<div class="loading-state">Gagal memuat. Cek koneksi.</div>';
-  }
+    try {
+        const res = await fetch(SHEET_URL + '?t=' + Date.now());
+        const data = await res.json();
+        entries = data.map(r => ({
+            id: r.id, date: r.date, type: r.type, 
+            catLabel: r.catLabel, catIcon: r.catIcon, 
+            amount: parseFloat(r.amount), desc: r.desc,
+            status: r.status, reason: r.reason // TAMBAH INI
+        }));
+        updateSummary(); renderHistory();
+    } catch(e) {}
 }
 
 function formatDateFromSheet(val) {
@@ -487,10 +491,49 @@ async function saveEntry() {
 // ── DELETE (SOFT) ──
 let pendingDeleteId = null;
 
+// --- LOGIC HAPUS BARU ---
 function deleteEntry(id) {
-  pendingDeleteId = id;
-  document.getElementById('deleteReason').value = '';
-  document.getElementById('deleteModal').classList.remove('hidden');
+    document.getElementById('deleteTargetId').value = id;
+    document.getElementById('deleteReason').value = '';
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+async function processDelete() {
+    const id = document.getElementById('deleteTargetId').value;
+    const reason = document.getElementById('deleteReason').value.trim();
+    
+    if (!reason) { showToast('⚠️ Isi alasannya dulu bro!'); return; }
+
+    const target = entries.find(e => String(e.id) === String(id));
+    if (!target) return;
+
+    showToast('🗑️ Mengupdate status...');
+    closeModal('deleteModal');
+
+    // Update UI Lokal (Kasih status dihapus & alasan)
+    target.status = 'DIHAPUS';
+    target.reason = reason;
+    
+    updateSummary(); 
+    renderHistory();
+
+    try {
+        await fetch(SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({
+                action: 'delete',
+                id: target.id,
+                date: target.date,
+                amount: target.amount,
+                desc: target.desc,
+                reason: reason
+            })
+        });
+        showToast('✅ Status data diperbarui');
+    } catch(e) {
+        showToast('❌ Gagal sinkron ke server');
+    }
 }
 
 async function confirmDelete() {
@@ -517,80 +560,69 @@ async function confirmDelete() {
   pendingDeleteId = null;
 }
 
-// ── RENDER ──
+// --- UPDATE RENDER (Biar ada efek coret) ---
 function renderHistory() {
-  const today   = new Date().toISOString().split('T')[0];
-  const colors  = ['bg-sage', 'bg-terra', 'bg-sand'];
+    const listHome = document.getElementById('historyListHome');
+    const listFull = document.getElementById('historyListFull');
+    const today = new Date().toISOString().split('T')[0];
 
-  const cardHTML = (e, i) => {
-    const isDeleted = e.status === 'DIHAPUS';
-    const badgeClass = e.type === 'income' ? 'badge-income' : (e.inlLabel === 'Needs' ? 'badge-needs' : 'badge-lifestyle');
-    if (isDeleted) {
-      return `
-      <div class="clay-card ${colors[i % 3]}" style="padding:18px; opacity:0.45; position:relative;">
-        <div style="position:absolute; top:12px; right:14px; font-size:0.6rem; font-weight:800; background:#D9835D; color:white; padding:3px 9px; border-radius:20px;">DIHAPUS</div>
-        <div style="display:flex; gap:14px; align-items:center;">
-          <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; filter:grayscale(1);">${e.catIcon}</div>
-          <div style="min-width:0;">
-            <div style="font-weight:800; font-size:0.95rem; text-decoration:line-through; opacity:0.7;">${e.desc || '—'}</div>
-            <div style="font-size:0.72rem; font-weight:600; opacity:0.6;">${e.catLabel} · ${e.type==='income'?'+':'−'}Rp ${e.amount.toLocaleString('id-ID')}</div>
-            <div style="font-size:0.72rem; font-weight:700; color:#D9835D; margin-top:4px;">Alasan: ${e.reason || '-'}</div>
-          </div>
-        </div>
-      </div>`;
-    }
-    return `
-    <div class="clay-card ${colors[i % 3]}" style="padding:18px;">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div style="display:flex; gap:14px; align-items:center; flex:1; min-width:0;">
-          <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">${e.catIcon}</div>
-          <div style="min-width:0;">
-            <div style="font-weight:800; font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${e.desc || '—'}</div>
-            <div style="font-size:0.72rem; font-weight:600; opacity:0.65; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${e.catLabel}</div>
-            <span class="badge ${badgeClass}">${e.inlLabel || ''}</span>
-          </div>
-        </div>
-        <div style="text-align:right; flex-shrink:0; margin-left:10px;">
-          <div style="font-weight:900; font-size:1rem;">${e.type==='income'?'+':'−'}Rp ${e.amount.toLocaleString('id-ID')}</div>
-          <span class="del-btn" onclick="deleteEntry(${e.id})">✕ hapus</span>
-        </div>
-      </div>
-    </div>`;
-  };
+    const todayEntries = entries.filter(e => e.date === today);
+    const grouped = {};
+    entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
+    const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
 
-  // Today
-  const todayEntries = entries.filter(e => e.date === today);
-  const listHome = document.getElementById('historyListHome');
-  listHome.innerHTML = todayEntries.length
-    ? todayEntries.map((e,i) => cardHTML(e,i)).join('')
-    : '<div class="loading-state">Belum ada transaksi hari ini 🌱</div>';
+    const colors = ['bg-sage', 'bg-terra', 'bg-sand'];
 
-  // Full
-  const grouped = {};
-  entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
-  const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
-  const listFull = document.getElementById('historyListFull');
-  listFull.innerHTML = sortedDates.length ? sortedDates.map(date => {
-    const label = date === today ? 'Today (Hari Ini)' : new Date(date + 'T00:00:00').toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long'});
-    return `
-      <details style="margin-bottom:14px;" ${date === today ? 'open' : ''}>
-        <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 4px; display:flex; justify-content:space-between; align-items:center; user-select:none;">
-          <span>📅 ${label}</span>
-          <span style="font-size:0.7rem; opacity:0.5;">▾</span>
-        </summary>
-        <div style="margin-top:10px;">${grouped[date].map((e,i) => cardHTML(e,i)).join('')}</div>
-      </details>`;
-  }).join('') : '<div class="loading-state">Belum ada data 📭</div>';
+    const cardHTML = (e, i) => {
+        const isDeleted = e.status === 'DIHAPUS';
+        return `
+        <div class="clay-card ${isDeleted ? '' : colors[i % 3]}" style="${isDeleted ? 'background: #d1d1d1; opacity: 0.7;' : ''}">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; gap:15px; align-items:center;">
+                    <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; filter: ${isDeleted ? 'grayscale(1)' : 'none'}">
+                        ${e.catIcon}
+                    </div>
+                    <div>
+                        <div style="font-weight:800; font-size:1rem; text-decoration: ${isDeleted ? 'line-through' : 'none'}">${e.desc}</div>
+                        <div style="font-size:0.75rem; font-weight:600; opacity:0.6;">
+                            ${isDeleted ? `<span style="color:red;">DELETED: ${e.reason}</span>` : e.catLabel}
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:900; font-size:1.1rem; text-decoration: ${isDeleted ? 'line-through' : 'none'}">
+                        ${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}
+                    </div>
+                    ${!isDeleted ? `<div onclick="deleteEntry('${e.id}')" style="font-size:0.65rem; font-weight:800; color:#D9835D; cursor:pointer; margin-top:5px; opacity:0.6;">DELETE ✕</div>` : ''}
+                </div>
+            </div>
+        </div>`;
+    };
+
+    listHome.innerHTML = todayEntries.map(cardHTML).join('') || '<div style="text-align:center; opacity:0.3; padding:40px;">No activity today</div>';
+    listFull.innerHTML = sortedDates.map(date => {
+        const isToday = date === today;
+        return `
+            <details style="margin-bottom:12px;" ${isToday ? 'open' : ''}>
+                <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 0; display:flex; justify-content:space-between; align-items:center;">
+                    <span>📅 ${isToday ? 'Hari Ini' : date}</span>
+                    <span style="font-size:0.7rem; opacity:0.5;">DETAIL ▾</span>
+                </summary>
+                <div style="margin-top:10px;">${grouped[date].map(cardHTML).join('')}</div>
+            </details>`;
+    }).join('');
 }
 
-// ── SUMMARY ──
+// Update updateSummary supaya saldo nggak ngitung data yang didelete
 function updateSummary() {
-  const inc = entries.filter(e => e.type==='income').reduce((s,e) => s + e.amount, 0);
-  const exp = entries.filter(e => e.type==='expense').reduce((s,e) => s + e.amount, 0);
-  const bal = inc - exp;
-  animateValue('sumBalance', bal);
-  document.getElementById('sumIncome').textContent  = 'Rp ' + inc.toLocaleString('id-ID');
-  document.getElementById('sumExpense').textContent = 'Rp ' + exp.toLocaleString('id-ID');
+    const activeEntries = entries.filter(e => e.status !== 'DIHAPUS');
+    const inc = activeEntries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
+    const exp = activeEntries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
+    
+    const oldBalance = parseInt(document.getElementById('sumBalance').textContent.replace(/\D/g,'')) || 0;
+    animateValue('sumBalance', oldBalance, (inc - exp), 500);
+    document.getElementById('sumIncome').textContent = inc.toLocaleString('id-ID');
+    document.getElementById('sumExpense').textContent = exp.toLocaleString('id-ID');
 }
 
 function animateValue(id, end) {
