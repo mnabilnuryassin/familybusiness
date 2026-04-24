@@ -289,6 +289,20 @@ summary { list-style: none; }
 
 <div class="toast" id="toast"></div>
 
+<!-- DELETE REASON MODAL -->
+<div id="deleteModal" class="modal-overlay hidden" onclick="closeModalOnOut(event,'deleteModal')">
+  <div class="modal-content" style="padding-bottom:40px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 style="font-weight:800; color:#D9835D;">🗑️ Hapus Transaksi</h2>
+      <div onclick="closeModal('deleteModal')" style="cursor:pointer; opacity:0.4; font-size:1.2rem;">✕</div>
+    </div>
+    <p style="font-size:0.88rem; opacity:0.6; margin-bottom:20px; line-height:1.5;">Data tidak akan benar-benar dihapus, hanya ditandai sebagai dihapus beserta alasannya.</p>
+    <label class="form-label">Alasan Penghapusan</label>
+    <textarea id="deleteReason" class="neu-inset" style="height:90px; resize:none;" placeholder="Misal: input salah, double entry, dll..."></textarea>
+    <button onclick="confirmDelete()" class="btn-submit" style="background:#D9835D; margin-top:20px;">Konfirmasi Hapus</button>
+  </div>
+</div>
+
 <script>
 // ── CONFIG ──
 const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
@@ -382,7 +396,9 @@ async function loadFromSheet() {
       catIcon:  r.catIcon   || (r.type === 'income' ? '💵' : '💸'),
       inlLabel: r.inlLabel  || '',
       amount:   parseFloat(r.amount) || 0,
-      desc:     r.desc || ''
+      desc:     r.desc || '',
+      status:   r.status || '',
+      reason:   r.reason || ''
     }));
     updateSummary();
     renderHistory();
@@ -468,19 +484,37 @@ async function saveEntry() {
   }
 }
 
-// ── DELETE ──
-async function deleteEntry(id) {
-  if (!confirm('Hapus transaksi ini?')) return;
-  entries = entries.filter(e => String(e.id) !== String(id));
-  updateSummary();
+// ── DELETE (SOFT) ──
+let pendingDeleteId = null;
+
+function deleteEntry(id) {
+  pendingDeleteId = id;
+  document.getElementById('deleteReason').value = '';
+  document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+async function confirmDelete() {
+  const reason = document.getElementById('deleteReason').value.trim();
+  if (!reason) { showToast('⚠️ Isi alasan penghapusan dulu!'); return; }
+
+  // Update di local state
+  const entry = entries.find(e => String(e.id) === String(pendingDeleteId));
+  if (entry) { entry.status = 'DIHAPUS'; entry.reason = reason; }
+
+  closeModal('deleteModal');
   renderHistory();
+  showToast('🗑️ Data ditandai dihapus');
+
   try {
     await fetch(SHEET_URL, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'delete', id })
+      body: JSON.stringify({ action: 'delete', id: pendingDeleteId, reason })
     });
-  } catch(e) {}
+  } catch(e) {
+    showToast('⚠️ Gagal update ke Sheet');
+  }
+  pendingDeleteId = null;
 }
 
 // ── RENDER ──
@@ -489,7 +523,22 @@ function renderHistory() {
   const colors  = ['bg-sage', 'bg-terra', 'bg-sand'];
 
   const cardHTML = (e, i) => {
+    const isDeleted = e.status === 'DIHAPUS';
     const badgeClass = e.type === 'income' ? 'badge-income' : (e.inlLabel === 'Needs' ? 'badge-needs' : 'badge-lifestyle');
+    if (isDeleted) {
+      return `
+      <div class="clay-card ${colors[i % 3]}" style="padding:18px; opacity:0.45; position:relative;">
+        <div style="position:absolute; top:12px; right:14px; font-size:0.6rem; font-weight:800; background:#D9835D; color:white; padding:3px 9px; border-radius:20px;">DIHAPUS</div>
+        <div style="display:flex; gap:14px; align-items:center;">
+          <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; filter:grayscale(1);">${e.catIcon}</div>
+          <div style="min-width:0;">
+            <div style="font-weight:800; font-size:0.95rem; text-decoration:line-through; opacity:0.7;">${e.desc || '—'}</div>
+            <div style="font-size:0.72rem; font-weight:600; opacity:0.6;">${e.catLabel} · ${e.type==='income'?'+':'−'}Rp ${e.amount.toLocaleString('id-ID')}</div>
+            <div style="font-size:0.72rem; font-weight:700; color:#D9835D; margin-top:4px;">Alasan: ${e.reason || '-'}</div>
+          </div>
+        </div>
+      </div>`;
+    }
     return `
     <div class="clay-card ${colors[i % 3]}" style="padding:18px;">
       <div style="display:flex; justify-content:space-between; align-items:center;">
