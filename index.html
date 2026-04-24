@@ -7,165 +7,186 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-deep: #2D3E40;       /* Background Utama Gelap */
-  --card-sage: #97B299;     /* Hijau Sage */
+  --bg-deep: #2D3E40;       /* Dark Teal Background */
+  --card-sage: #97B299;     /* Soft Green */
   --card-terra: #D9835D;    /* Terracotta */
-  --card-sand: #E5B299;     /* Sand / Peach */
-  --accent-teal: #4FB0AC;   /* Teal Cerah */
-  --text-dark: #2D3E40;     /* Teks Gelap di kartu */
-  --text-white: #FAF7F2;    /* Teks Putih Gading */
+  --card-sand: #E5B299;     /* Peach/Sand */
+  --accent-teal: #4FB0AC;   /* Bright Teal */
+  --text-dark: #2D3E40;     
+  --text-white: #FAF7F2;    
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
 body {
   background-color: var(--bg-deep);
   color: var(--text-white);
   min-height: 100vh;
-  padding-bottom: 110px;
+  padding-bottom: 120px;
   overflow-x: hidden;
   position: relative;
 }
 
-/* DEKORASI BACKGROUND (Shape Organik ala Referensi) */
+/* DEKORASI BACKGROUND (Shape Organik) */
 body::before {
   content: "";
   position: fixed;
-  top: -100px; right: -80px;
+  top: -50px; left: -50px;
+  width: 250px; height: 250px;
+  background: var(--card-sage);
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.1;
+  z-index: -1;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  bottom: 10%; right: -50px;
   width: 300px; height: 300px;
   background: var(--card-terra);
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(90px);
   opacity: 0.15;
   z-index: -1;
 }
 
-/* CLAY CARD STYLE (Flat tapi Soft) */
+/* FLAT CARD STYLE (Clean & Soft) */
 .clay-card {
   background: var(--card-sage);
-  border-radius: 40px; /* Sangat bulat sesuai referensi */
-  padding: 25px;
+  border-radius: 35px;
+  padding: 22px;
   border: none;
-  box-shadow: 10px 10px 25px rgba(0,0,0,0.2);
+  /* Bayangan flat yang lembut (bukan emboss) */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
   color: var(--text-dark);
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
+  margin-bottom: 18px;
+  transition: transform 0.2s ease;
 }
 
-/* Variasi Warna Kartu */
+.clay-card:active { transform: scale(0.97); }
+
+/* VARIASI WARNA */
 .bg-sage { background-color: var(--card-sage); }
 .bg-terra { background-color: var(--card-terra); }
 .bg-sand { background-color: var(--card-sand); }
 
-/* KHUSUS SECTION ACTIVITY (Background berbeda) */
+/* ACTIVITY SECTION (With Shape Background) */
 .activity-section {
-  background: rgba(255, 255, 255, 0.05);
-  margin: 0 -20px;
-  padding: 30px 20px;
-  border-radius: 50px 50px 0 0;
-  min-height: 400px;
+  background: rgba(255, 255, 255, 0.04);
+  margin: 25px -20px 0;
+  padding: 35px 20px;
+  border-radius: 45px 45px 0 0;
+  position: relative;
 }
 
 .section-title {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 800;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* NAVIGATION GAYA BARU (Flat Floating) */
+/* NAVIGATION (Floating Flat) */
 .bottom-nav {
   position: fixed; bottom: 30px; left: 20px; right: 20px;
   background: #FAF7F2;
-  height: 80px; border-radius: 40px;
+  height: 75px; border-radius: 35px;
   display: flex; justify-content: space-around; align-items: center;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
   z-index: 1000;
 }
 
-.nav-item { color: #A0A0A0; font-size: 1.6rem; cursor: pointer; }
+.nav-item { color: #A0A0A0; font-size: 1.6rem; cursor: pointer; transition: 0.3s; }
 .nav-item.active { color: var(--accent-teal); }
 
 .nav-add { 
   background: var(--accent-teal); color: white !important; 
-  width: 70px; height: 70px; border-radius: 50%; 
+  width: 65px; height: 65px; border-radius: 50%; 
   display: flex; align-items: center; justify-content: center; 
-  font-size: 2.2rem; margin-top: -50px; 
-  box-shadow: 0 10px 25px rgba(79, 176, 172, 0.5);
-  border: 8px solid var(--bg-deep);
+  font-size: 2rem; margin-top: -55px; 
+  box-shadow: 0 10px 20px rgba(79, 176, 172, 0.4);
+  border: 6px solid var(--bg-deep);
 }
 
-/* MODAL & INPUT (Clean & Flat) */
-.modal-content { 
-  background: #FAF7F2; width: 100%; border-radius: 50px 50px 0 0; 
-  padding: 40px 25px; color: var(--text-dark); 
-}
+/* MODAL & INPUTS */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: flex-end; }
+.modal-content { background: #FAF7F2; width: 100%; border-radius: 45px 45px 0 0; padding: 40px 25px; color: var(--text-dark); animation: slideUp 0.4s ease; }
 
-.clay-input {
-  background: #E8E8E8;
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.neu-inset {
+  background: #EAEAEA;
   border: none; border-radius: 20px;
   padding: 18px; width: 100%;
   font-size: 1rem; color: var(--text-dark);
-  margin-top: 10px;
+  margin-top: 5px; outline: none;
 }
 
-.type-btn { 
-  padding: 16px; border-radius: 25px; background: #E8E8E8; 
-  font-weight: 800; border: none; transition: 0.3s;
-}
+.form-label { display: block; font-size: 0.75rem; font-weight: 800; opacity: 0.6; text-transform: uppercase; margin: 15px 0 5px 5px; }
+
+.type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+.type-btn { padding: 15px; border-radius: 20px; background: #EAEAEA; font-weight: 800; border: none; cursor: pointer; text-align: center; }
 .type-btn.active { background: var(--accent-teal); color: white; }
 
-.toast { position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%); background: var(--accent-teal); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; opacity: 0; transition: 0.3s; }
+.btn-submit { width: 100%; padding: 18px; background: var(--bg-deep); color: white; border: none; border-radius: 22px; font-weight: 800; margin-top: 25px; cursor: pointer; }
+
+/* UTILITY */
+.container { padding: 0 20px; }
+.hidden { display: none !important; }
+.toast { position: fixed; bottom: 125px; left: 50%; transform: translateX(-50%); background: var(--accent-teal); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; opacity: 0; pointer-events: none; transition: 0.3s; }
 .toast.show { opacity: 1; }
+
+summary::-webkit-details-marker { display: none; }
 </style>
 </head>
 <body>
 
 <div id="loginScreen" class="container" style="padding-top: 100px; text-align: center;">
     <div style="font-size: 4.5rem; margin-bottom: 20px;">🍯</div>
-    <h1 style="color: var(--card-peach); font-weight: 800;">Yasiin Family</h1>
-    <p style="color: rgba(255,255,255,0.5); margin-bottom: 40px;">High Tech, High Love</p>
-    <div class="neu-card" style="background: white;">
-        <input type="text" id="loginUsername" class="neu-inset" placeholder="Username" style="color: var(--text-dark); background: #f0f0f0; margin-bottom: 15px;">
-        <input type="password" id="loginPassword" class="neu-inset" placeholder="Password" style="color: var(--text-dark); background: #f0f0f0;">
-        <div id="loginError" style="color: #ff8e8e; font-size: 0.8rem; margin-top: 10px;"></div>
-        <button onclick="doLogin()" class="btn-submit" style="background: var(--accent-teal);">Masuk</button>
+    <h1 style="color: var(--card-sand); font-weight: 800; font-size: 2.2rem;">Yasiin Family</h1>
+    <p style="opacity: 0.5; margin-bottom: 40px;">High Tech, High Love</p>
+    <div class="clay-card" style="background: white; padding: 30px 20px;">
+        <input type="text" id="loginUsername" class="neu-inset" placeholder="Username" style="margin-bottom: 15px;">
+        <input type="password" id="loginPassword" class="neu-inset" placeholder="Password">
+        <div id="loginError" style="color: #D9835D; font-size: 0.8rem; margin-top: 10px;"></div>
+        <button onclick="doLogin()" class="btn-submit" style="background: var(--accent-teal);">Masuk / Login</button>
     </div>
 </div>
 
 <div id="mainApp" class="hidden">
-    <div class="top-bar container" style="padding-top: 50px;">
-        <div class="user-info">
-            <div class="avatar" id="userAvatar">Y</div>
+    <div class="top-bar container" style="padding-top: 40px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div id="userAvatar" style="width: 50px; height: 50px; background: var(--card-sand); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-weight: 800; font-size: 1.4rem;">Y</div>
             <div>
-                <div style="font-size: 0.8rem; opacity: 0.6;">Good Morning,</div>
-                <div id="userLabel" style="font-size: 1.4rem; font-weight: 800;">Yasiin</div>
+                <div style="font-size: 0.8rem; opacity: 0.6;">Welcome back,</div>
+                <div id="userLabel" style="font-size: 1.2rem; font-weight: 800;">User</div>
             </div>
         </div>
-        <div class="nav-item" onclick="openSettings()">⚙️</div>
+        <div onclick="openSettings()" style="font-size: 1.5rem; cursor: pointer;">⚙️</div>
     </div>
 
     <div id="panel-home" class="panel active container">
-        <div class="clay-card bg-sand" style="text-align: center; padding: 40px 20px; margin-top: 20px;">
-            <div style="font-size: 0.8rem; font-weight: 700; opacity: 0.7;">MY TOTAL BALANCE</div>
-            <div id="sumBalance" style="font-size: 2.8rem; font-weight: 900; letter-spacing: -2px;">Rp 0</div>
-            <div style="display: flex; justify-content: center; gap: 30px; margin-top: 25px; font-weight: 800;">
-                <div style="color: #2D3E40;">↑ <span id="sumIncome">0</span></div>
-                <div style="color: #2D3E40;">↓ <span id="sumExpense">0</span></div>
+        <div class="clay-card bg-sand" style="text-align: center; padding: 40px 20px; margin-top: 25px;">
+            <div style="font-size: 0.75rem; font-weight: 800; opacity: 0.6; letter-spacing: 1px;">TOTAL BALANCE (SALDO)</div>
+            <div id="sumBalance" style="font-size: 2.6rem; font-weight: 900; letter-spacing: -1.5px; margin: 10px 0;">Rp 0</div>
+            <div style="display: flex; justify-content: center; gap: 25px; font-weight: 800; margin-top: 15px;">
+                <div style="color: #2D3E40; font-size: 0.9rem;">↑ <span id="sumIncome">0</span></div>
+                <div style="color: #2D3E40; font-size: 0.9rem;">↓ <span id="sumExpense">0</span></div>
             </div>
         </div>
 
         <div class="activity-section">
-            <h3 class="section-title">Today's Activity <span style="font-size: 0.7rem; background: var(--accent-teal); color: white; padding: 4px 12px; border-radius: 20px;">Hari ini</span></h3>
+            <h3 class="section-title">Today's Activity <span style="font-size: 0.65rem; background: var(--accent-teal); color: white; padding: 5px 12px; border-radius: 20px; margin-left: 5px;">HARI INI</span></h3>
             <div id="historyListHome"></div>
         </div>
     </div>
 
     <div id="panel-history" class="panel container">
-        <h2 style="margin: 30px 0 20px; font-weight: 800; font-size: 2rem;">Full History</h2>
+        <h2 style="margin: 30px 0 20px; font-weight: 800; font-size: 1.8rem; color: var(--card-sand);">Full History (Riwayat)</h2>
         <div id="historyListFull"></div>
     </div>
     
@@ -178,21 +199,26 @@ body::before {
 
 <div id="addModal" class="modal-overlay hidden" onclick="closeModalOnOut(event, 'addModal')">
     <div class="modal-content">
-        <h2 style="margin-bottom: 25px; font-weight: 800;">New Record</h2>
-        <div class="type-grid">
-            <div id="btnExp" class="type-btn active" onclick="setEntryType('expense')">💸 Out</div>
-            <div id="btnInc" class="type-btn" onclick="setEntryType('income')">💵 In</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <h2 style="font-weight: 800;">New Record</h2>
+            <div onclick="closeModal('addModal')" style="font-size: 1.5rem; opacity: 0.3; cursor: pointer;">✕</div>
         </div>
-        <label class="form-label">Category</label>
-        <select id="selectCatExp" class="neu-inset" style="background:white; color:var(--text-dark);" onchange="checkIncomeSource(this.value)"></select>
+        
+        <div class="type-grid">
+            <div id="btnExp" class="type-btn active" onclick="setEntryType('expense')">💸 Out (Keluar)</div>
+            <div id="btnInc" class="type-btn" onclick="setEntryType('income')">💵 In (Masuk)</div>
+        </div>
+
+        <label class="form-label">Category (Kategori)</label>
+        <select id="selectCatExp" class="neu-inset" onchange="checkIncomeSource(this.value)"></select>
         
         <div id="customSourceSection" class="hidden" style="margin-top: 15px;">
-            <label class="form-label">Spesifik Sumber</label>
-            <input type="text" id="inputCustomSource" class="neu-inset" style="background:white; color:var(--text-dark);" placeholder="Dikasih siapa?">
+            <label class="form-label">Specific Source (Sumber)</label>
+            <input type="text" id="inputCustomSource" class="neu-inset" placeholder="Dikasih siapa? / Sumber lainnya">
         </div>
 
         <div id="labelSection">
-            <label class="form-label">Tag</label>
+            <label class="form-label">Tag (Tipe Kebutuhan)</label>
             <div class="type-grid">
                 <div id="btnNeeds" class="type-btn active" onclick="setLabel('needs')">🏡 Needs</div>
                 <div id="btnLifestyle" class="type-btn" onclick="setLabel('lifestyle')">✨ Life</div>
@@ -200,12 +226,12 @@ body::before {
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <div><label class="form-label">Amount</label><input type="number" id="inputAmount" class="neu-inset" style="background:white; color:var(--text-dark);"></div>
-            <div><label class="form-label">Date</label><input type="date" id="inputDate" class="neu-inset" style="background:white; color:var(--text-dark);"></div>
+            <div><label class="form-label">Amount (Jumlah)</label><input type="number" id="inputAmount" class="neu-inset"></div>
+            <div><label class="form-label">Date (Tanggal)</label><input type="date" id="inputDate" class="neu-inset"></div>
         </div>
 
-        <label class="form-label">Note</label>
-        <textarea id="inputDesc" class="neu-inset" style="height: 70px; resize: none; background:white; color:var(--text-dark);"></textarea>
+        <label class="form-label">Note (Keterangan)</label>
+        <textarea id="inputDesc" class="neu-inset" style="height: 70px; resize: none;"></textarea>
         
         <button onclick="saveEntry()" class="btn-submit">Confirm Transaction</button>
     </div>
@@ -214,10 +240,9 @@ body::before {
 <div class="toast" id="toast"></div>
 
 <script>
-// --- STATE & CONFIG ---
+// --- CONFIG & STATE ---
 let currentUser = null, SHEET_URL = '', entries = [], currentEntryType = 'expense', selectedINL = 'needs';
 
-// KATEGORI LENGKAP & BILINGUAL
 const CATS_EXPENSE = [
   { id:'makanan', label:'Food & Drink (Makan)', icon:'🍱' },
   { id:'restoran', label:'Dining Out (Jajan)', icon:'🍽️' },
@@ -234,13 +259,13 @@ const CATS_EXPENSE = [
 
 const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
 
-// --- CORE FUNCTIONS ---
+// --- FUNCTIONS ---
 async function doLogin() {
     const user = document.getElementById('loginUsername').value.trim();
     const pass = document.getElementById('loginPassword').value.trim();
     const err = document.getElementById('loginError');
     if (!user || !pass) return;
-    err.textContent = 'Authenticating...';
+    err.textContent = 'Verifying...';
     try {
         const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
         const accounts = await res.json();
@@ -252,7 +277,7 @@ async function doLogin() {
             document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
             document.getElementById('userLabel').textContent = user;
             initApp();
-        } else { err.textContent = 'Invalid Account'; }
+        } else { err.textContent = 'Akun salah bro!'; }
     } catch(e) { err.textContent = 'Server Error'; }
 }
 
@@ -275,94 +300,65 @@ async function loadFromSheet() {
             amount: parseFloat(r.amount), 
             desc: r.desc 
         }));
-        updateSummary(); 
-        renderHistory();
+        updateSummary(); renderHistory();
     } catch(e) { console.error(e); }
 }
 
-// --- UI RENDERING (PIXIE STYLE) ---
 function renderHistory() {
     const listHome = document.getElementById('historyListHome');
     const listFull = document.getElementById('historyListFull');
     const today = new Date().toISOString().split('T')[0];
 
-    // Filter Khusus Hari Ini untuk Home
     const todayEntries = entries.filter(e => e.date === today);
-
-    // Grouping Data per Tanggal untuk Tab History
     const grouped = {};
-    entries.forEach(e => { 
-        if (!grouped[e.date]) grouped[e.date] = []; 
-        grouped[e.date].push(e); 
-    });
+    entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
     const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
 
-    const colors = ['#97B299', '#D9835D', '#E5B299', '#B2C4D1'];
+    const colors = ['bg-sage', 'bg-terra', 'bg-sand'];
 
-    // RENDER HOME (Today's Activity)
-    listHome.innerHTML = todayEntries.map((e, i) => `
-        <div class="clay-card" style="background: ${colors[i % 4]};">
+    const cardHTML = (e, i) => `
+        <div class="clay-card ${colors[i % 3]}">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; gap:15px; align-items:center;">
-                    <div style="background:rgba(255,255,255,0.3); width:50px; height:50px; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:1.5rem;">${e.catIcon}</div>
+                    <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem;">${e.catIcon}</div>
                     <div>
-                        <div style="font-weight:800; font-size:1.1rem; color:#2D3E40;">${e.desc}</div>
-                        <div style="font-size:0.8rem; font-weight:600; opacity:0.6; color:#2D3E40;">${e.catLabel}</div>
+                        <div style="font-weight:800; font-size:1rem;">${e.desc}</div>
+                        <div style="font-size:0.75rem; font-weight:600; opacity:0.6;">${e.catLabel}</div>
                     </div>
                 </div>
-                <div style="font-weight:900; font-size:1.2rem; color:#2D3E40;">${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}</div>
+                <div style="font-weight:900; font-size:1.1rem;">${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}</div>
             </div>
-        </div>
-    `).join('') || '<div style="text-align:center; opacity:0.5; padding:40px;">No transactions today (Belum ada jajan hari ini).</div>';
+        </div>`;
 
-    // RENDER HISTORY TAB (Collapse Style)
+    listHome.innerHTML = todayEntries.map(cardHTML).join('') || '<div style="text-align:center; opacity:0.3; padding:40px;">No activity today</div>';
+
     listFull.innerHTML = sortedDates.map(date => {
         const isToday = date === today;
-        const dateObj = new Date(date);
-        const dateLabel = dateObj.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long' });
-        
         return `
-            <details style="margin-bottom:15px;" ${isToday ? 'open' : ''}>
-                <summary style="font-weight:800; color:#E5B299; cursor:pointer; padding:10px 0; font-size:1rem; list-style:none;">
-                    📅 ${isToday ? 'Today (Hari Ini)' : dateLabel} <span style="float:right; opacity:0.5;">▼</span>
+            <details style="margin-bottom:12px;" ${isToday ? 'open' : ''}>
+                <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 0; display:flex; justify-content:space-between; align-items:center;">
+                    <span>📅 ${isToday ? 'Hari Ini (Today)' : date}</span>
+                    <span style="font-size:0.7rem; opacity:0.5;">COLLAPSE ▾</span>
                 </summary>
-                ${grouped[date].map((e, i) => `
-                    <div class="clay-card" style="background: ${colors[i % 4]}; margin-top:10px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div style="display:flex; gap:12px; align-items:center;">
-                                <div style="font-size:1.5rem;">${e.catIcon}</div>
-                                <div>
-                                    <div style="font-weight:800; color:#2D3E40;">${e.desc}</div>
-                                    <div style="font-size:0.75rem; font-weight:600; opacity:0.6; color:#2D3E40;">${e.catLabel}</div>
-                                </div>
-                            </div>
-                            <div style="font-weight:900; color:#2D3E40;">${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}</div>
-                        </div>
-                    </div>
-                `).join('')}
-            </details>
-        `;
+                <div style="margin-top:10px;">${grouped[date].map(cardHTML).join('')}</div>
+            </details>`;
     }).join('');
 }
 
-// --- FORM HANDLING ---
-function setEntryType(type) {
-    currentEntryType = type;
-    document.getElementById('btnExp').classList.toggle('active', type === 'expense');
-    document.getElementById('btnInc').classList.toggle('active', type === 'income');
-    document.getElementById('labelSection').style.display = (type === 'expense') ? 'block' : 'none';
-    document.getElementById('inputDesc').placeholder = (type === 'expense') ? "Duitnya dipake apa? (Ex: Beli cilok)" : "Dapet duit dari mana? (Ex: Gaji)";
+function setEntryType(t) {
+    currentEntryType = t;
+    document.getElementById('btnExp').classList.toggle('active', t==='expense');
+    document.getElementById('btnInc').classList.toggle('active', t==='income');
+    document.getElementById('labelSection').style.display = t==='expense' ? 'block' : 'none';
     document.getElementById('customSourceSection').classList.add('hidden');
     renderCats();
 }
 
 function renderCats() {
-    const select = document.getElementById('selectCatExp');
-    if (currentEntryType === 'expense') {
-        select.innerHTML = CATS_EXPENSE.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
-    } else {
-        select.innerHTML = '<option value="apih">👨 From Apih (Apih)</option><option value="lain">✏️ Others (Lainnya)</option>';
-    }
+    const s = document.getElementById('selectCatExp');
+    s.innerHTML = currentEntryType==='expense' ? 
+        CATS_EXPENSE.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('') :
+        '<option value="apih">👨 From Apih</option><option value="lain">✏️ Others (Lainnya)</option>';
 }
 
 async function saveEntry() {
@@ -370,46 +366,28 @@ async function saveEntry() {
     const date = document.getElementById('inputDate').value;
     const desc = document.getElementById('inputDesc').value.trim();
     const catSelect = document.getElementById('selectCatExp');
-    const customSource = document.getElementById('inputCustomSource').value.trim();
 
-    if (!amount || !date) { showToast('⚠️ Data tidak lengkap!'); return; }
-    if (currentEntryType === 'expense' && !desc) { showToast('⚠️ Note/Keterangan wajib diisi!'); return; }
+    if (!amount || !date || (currentEntryType==='expense' && !desc)) { showToast('⚠️ Lengkapi data!'); return; }
 
     let catLabel = catSelect.options[catSelect.selectedIndex].text;
-    if (currentEntryType === 'income' && catSelect.value === 'lain') {
-        if (!customSource) { showToast('⚠️ Sumber wajib diisi!'); return; }
-        catLabel = customSource;
-    }
-
     const entry = {
-        id: Date.now(), type: currentEntryType, date: date,
-        catLabel: currentEntryType === 'income' ? catLabel : catLabel.split(' ').slice(0, -1).join(' '),
-        catIcon: currentEntryType === 'income' ? (catSelect.value === 'apih' ? '👨' : '💵') : catLabel.split(' ')[0],
-        amount: amount, desc: desc || "-",
-        inlLabel: currentEntryType === 'expense' ? (selectedINL === 'needs' ? 'Needs' : 'Lifestyle') : 'Income'
+        id: Date.now(), type: currentEntryType, date,
+        catLabel: currentEntryType==='income' ? catLabel : catLabel.split(' ').slice(1).join(' '),
+        catIcon: currentEntryType==='income' ? '💵' : catLabel.split(' ')[0],
+        amount, desc: desc || "-",
+        inlLabel: currentEntryType==='expense' ? (selectedINL==='needs' ? 'Needs' : 'Lifestyle') : 'Income'
     };
 
-    showToast('💾 Saving (Menyimpan)...');
-    entries.unshift(entry); 
-    updateSummary(); 
-    renderHistory(); 
-    closeModal('addModal');
-
-    try {
-        await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(entry) });
-        showToast('✅ Success (Berhasil)!');
-    } catch(e) { showToast('❌ Failed (Gagal)!'); }
+    showToast('💾 Saving...');
+    entries.unshift(entry); updateSummary(); renderHistory(); closeModal('addModal');
+    try { await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(entry) }); showToast('✅ Success!'); } catch(e) { showToast('❌ Error!'); }
 }
 
-// --- UTILS ---
 function updateSummary() {
     const inc = entries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
     const exp = entries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-    
-    // Animasi angka saldo
     const oldBalance = parseInt(document.getElementById('sumBalance').textContent.replace(/\D/g,'')) || 0;
-    animateValue('sumBalance', oldBalance, (inc - exp), 500);
-    
+    animateValue('sumBalance', oldBalance, (inc - exp), 600);
     document.getElementById('sumIncome').textContent = inc.toLocaleString('id-ID');
     document.getElementById('sumExpense').textContent = exp.toLocaleString('id-ID');
 }
@@ -418,23 +396,16 @@ function animateValue(id, start, end, duration) {
     const obj = document.getElementById(id);
     const range = end - start;
     let startTime = null;
-
     function step(timestamp) {
         if (!startTime) startTime = timestamp;
         const progress = Math.min((timestamp - startTime) / duration, 1);
-        const current = Math.floor(progress * range + start);
-        obj.textContent = 'Rp ' + current.toLocaleString('id-ID');
+        obj.textContent = 'Rp ' + Math.floor(progress * range + start).toLocaleString('id-ID');
         if (progress < 1) window.requestAnimationFrame(step);
     }
     window.requestAnimationFrame(step);
 }
 
-function showToast(msg) {
-    const t = document.getElementById('toast'); t.textContent = msg;
-    t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-// Fungsi Modal & Nav tetep sama
+function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
 function checkIncomeSource(v) { document.getElementById('customSourceSection').classList.toggle('hidden', !(currentEntryType==='income' && v==='lain')); }
 function setLabel(v) { selectedINL=v; document.getElementById('btnNeeds').classList.toggle('active', v==='needs'); document.getElementById('btnLifestyle').classList.toggle('active', v==='lifestyle'); }
 function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
