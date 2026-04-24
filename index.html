@@ -98,6 +98,46 @@ body {
   box-shadow: 0 15px 30px rgba(79, 176, 172, 0.4);
   border: 6px solid var(--bg-main);
 }
+  .top-bar {
+  padding: 40px 20px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+  .user-info div:last-child div:first-child {
+  font-size: 0.85rem !important;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.5px;
+}
+
+.user-info div:last-child div:last-child {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-light);
+}  
+  .balance-label { 
+  color: var(--text-dark); 
+  font-size: 0.75rem; 
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  opacity: 0.7;
+}
+
+.balance-amount { 
+  font-size: 2.8rem; 
+  font-weight: 800; 
+  margin: 10px 0; 
+  color: var(--text-dark); 
+  letter-spacing: -1.5px;
+}
+  .modal-content {
+  background: #F2E9E1; /* Krem pastel */
+  width: 100%; border-radius: 45px 45px 0 0;
+  padding: 35px 25px 45px;
+  color: var(--text-dark);
+  box-shadow: 0 -15px 40px rgba(0,0,0,0.3);
+}
+  
 </style>
 </head>
 <body>
@@ -287,31 +327,43 @@ function setEntryType(type) {
   renderCats();
 }
 
-// Tambahin variasi warna kartu pas ngerender riwayat
 function renderHistory() {
   const listHome = document.getElementById('historyListHome');
-  const cardColors = ['var(--card-green)', '--card-orange', '--card-peach'];
-  let colorIdx = 0;
+  const listFull = document.getElementById('historyListFull');
+  
+  if (!entries.length) {
+    const empty = '<div style="text-align:center; opacity:0.5; padding:50px;">Belum ada catatan nih...</div>';
+    listHome.innerHTML = empty; listFull.innerHTML = empty; return;
+  }
 
-  const html = entries.map(e => {
-    const color = (e.type === 'income') ? 'var(--card-peach)' : (colorIdx++ % 2 === 0 ? 'var(--card-green)' : 'var(--card-orange)');
+  const colors = ['#97B299', '#D9835D', '#E5B299', '#B2C4D1']; 
+  
+  const html = entries.map((e, index) => {
+    const cardBg = colors[index % colors.length];
     return `
-      <div class="neu-card" style="background: ${color}">
+      <div class="neu-card" style="background: ${cardBg};">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div style="display:flex; gap:12px; align-items:center;">
-            <div style="font-size:1.5rem;">${e.catIcon}</div>
+          <div style="display:flex; gap:15px; align-items:center;">
+            <div style="background:rgba(255,255,255,0.2); width:45px; height:45px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem;">
+              ${e.catIcon}
+            </div>
             <div>
-              <div style="font-weight:700;">${e.desc}</div>
-              <div style="font-size:0.75rem; opacity:0.7;">${e.catLabel}</div>
+              <div style="font-weight:800; font-size:1rem; color:var(--text-dark);">${e.desc}</div>
+              <div style="font-size:0.75rem; font-weight:600; color:var(--text-dark); opacity:0.6;">${e.catLabel}</div>
             </div>
           </div>
-          <div style="font-weight:800; font-size:1.1rem;">
-            ${e.type==='income'?'+':'-'}${formatRp(e.amount)}
+          <div style="text-align:right;">
+            <div style="font-weight:900; font-size:1.1rem; color:var(--text-dark);">
+              ${e.type==='income'?'+':'-'}${formatRp(e.amount)}
+            </div>
+            <div onclick="deleteEntry(${e.id})" style="font-size:0.6rem; font-weight:700; text-transform:uppercase; margin-top:5px; opacity:0.4; cursor:pointer;">Hapus</div>
           </div>
         </div>
       </div>`;
   }).join('');
-  listHome.innerHTML = html || '<div style="text-align:center; opacity:0.5;">Kosong...</div>';
+
+  listHome.innerHTML = html;
+  listFull.innerHTML = html;
 }
 
 // Fungsi load, delete, updateSummary, formatRp dll tetap sama/lanjutkan sesuai kebutuhan
