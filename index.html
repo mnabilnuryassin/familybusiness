@@ -306,19 +306,6 @@ summary { list-style: none; }
 
 <div class="toast" id="toast"></div>
 
-<!-- DELETE REASON MODAL -->
-<div id="deleteModal" class="modal-overlay hidden" onclick="closeModalOnOut(event,'deleteModal')">
-  <div class="modal-content" style="padding-bottom:40px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-      <h2 style="font-weight:800; color:#D9835D;">🗑️ Hapus Transaksi</h2>
-      <div onclick="closeModal('deleteModal')" style="cursor:pointer; opacity:0.4; font-size:1.2rem;">✕</div>
-    </div>
-    <p style="font-size:0.88rem; opacity:0.6; margin-bottom:20px; line-height:1.5;">Data tidak akan benar-benar dihapus, hanya ditandai sebagai dihapus beserta alasannya.</p>
-    <label class="form-label">Alasan Penghapusan</label>
-    <textarea id="deleteReason" class="neu-inset" style="height:90px; resize:none;" placeholder="Misal: input salah, double entry, dll..."></textarea>
-    <button onclick="confirmDelete()" class="btn-submit" style="background:#D9835D; margin-top:20px;">Konfirmasi Hapus</button>
-  </div>
-</div>
 
 <script>
 // ── CONFIG ──
@@ -613,31 +600,39 @@ function renderHistory() {
     }).join('');
 }
 
-// Update updateSummary supaya saldo nggak ngitung data yang didelete
 function updateSummary() {
     const activeEntries = entries.filter(e => e.status !== 'DIHAPUS');
     const inc = activeEntries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
     const exp = activeEntries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
+    const totalBalance = inc - exp;
     
-    const oldBalance = parseInt(document.getElementById('sumBalance').textContent.replace(/\D/g,'')) || 0;
-    animateValue('sumBalance', oldBalance, (inc - exp), 500);
+    // Ambil nilai angka aja dari teks saldo yang sekarang tampil
+    const currentDisplay = document.getElementById('sumBalance').textContent.replace(/[^\d-]/g, '');
+    const oldBalance = parseInt(currentDisplay) || 0;
+    
+    // Jalankan animasi
+    animateValue('sumBalance', oldBalance, totalBalance, 500);
+    
     document.getElementById('sumIncome').textContent = inc.toLocaleString('id-ID');
     document.getElementById('sumExpense').textContent = exp.toLocaleString('id-ID');
-}
+}  
 
-function animateValue(id, end) {
-  const el = document.getElementById(id);
-  const start = 0, duration = 500;
-  let startTime = null;
-  function step(ts) {
-    if (!startTime) startTime = ts;
-    const p = Math.min((ts - startTime) / duration, 1);
-    el.textContent = 'Rp ' + Math.floor(p * end).toLocaleString('id-ID');
-    if (p < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
+function animateValue(id, start, end, duration) {
+    const obj = document.getElementById(id);
+    const range = end - start;
+    let startTime = null;
 
+    function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const current = Math.floor(progress * range + start);
+        obj.textContent = 'Rp ' + current.toLocaleString('id-ID');
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    }
+    window.requestAnimationFrame(step);
+}
 // ── FORM ──
 function setEntryType(t) {
   currentEntryType = t;
