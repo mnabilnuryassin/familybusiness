@@ -324,82 +324,78 @@ summary { list-style: none; }
 
 
 <script>
-// ── CONFIG ──
-const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
+<script>
+// --- STATE & CONFIG ---
+let currentUser = null, SHEET_URL = '', entries = [], currentEntryType = 'expense', selectedINL = 'needs';
 
 const CATS_EXPENSE = [
-  { id:'makanan',      label:'Makanan & Minuman',      icon:'🍱' },
-  { id:'restoran',     label:'Restoran & Take Out',     icon:'🍽️' },
-  { id:'kebersihan',   label:'Kebersihan & Perawatan',  icon:'🧴' },
-  { id:'rumah',        label:'Kebutuhan Rumah Tangga',  icon:'🏠' },
-  { id:'transportasi', label:'Transportasi',            icon:'🚗' },
-  { id:'pakaian',      label:'Pakaian & Laundry',       icon:'👗' },
-  { id:'hiburan',      label:'Hiburan',                 icon:'🎬' },
-  { id:'kesehatan',    label:'Kesehatan',               icon:'💊' },
-  { id:'pendidikan',   label:'Pendidikan',              icon:'📚' },
-  { id:'komunikasi',   label:'Komunikasi',              icon:'📱' },
-  { id:'hadiah',       label:'Hadiah & Acara Sosial',   icon:'🎁' },
-  { id:'hutang',       label:'Hutang (kita berhutang)', icon:'📤' },
-  { id:'piutang',      label:'Piutang (kita minjemin)', icon:'📥' },
+  { id:'makanan', label:'Food & Drink (Makan)', icon:'🍱' },
+  { id:'restoran', label:'Dining Out (Jajan)', icon:'🍽️' },
+  { id:'kebersihan', label:'Hygiene (Kebersihan)', icon:'🧴' },
+  { id:'rumah', label:'Household (Rumah)', icon:'🏠' },
+  { id:'transportasi', label:'Travel (Transport)', icon:'🚗' },
+  { id:'pakaian', label:'Apparel (Baju)', icon:'👗' },
+  { id:'hiburan', label:'Entertainment (Hiburan)', icon:'🎬' },
+  { id:'kesehatan', label:'Medical (Kesehatan)', icon:'💊' },
+  { id:'pendidikan', label:'Study (Pendidikan)', icon:'📚' },
+  { id:'komunikasi', label:'Internet (Kuota/Pulsa)', icon:'📱' },
+  { id:'hadiah', label:'Gift (Kado/Sosial)', icon:'🎁' }
 ];
 
-// ── STATE ──
-let currentUser = null;
-let SHEET_URL = '';
-let entries = [];
-let currentEntryType = 'expense';
-let selectedINL = 'needs';
+const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
 
-// ── LOGIN ──
+// --- FUNGSI LOGIN (SUDAH DIPERBAIKI) ---
 async function doLogin() {
-  const user = document.getElementById('loginUsername').value.trim();
-  const pass = document.getElementById('loginPassword').value.trim();
-  const err  = document.getElementById('loginError');
-  if (!user || !pass) { err.textContent = 'Username & password wajib diisi.'; return; }
-
-  err.textContent = 'Memverifikasi...';
-  try {
-    const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
-    const accounts = await res.json();
-    const found = accounts.find(a => a.username === user && a.password === pass);
-    if (found) {
-      currentUser = found;
-      SHEET_URL   = found.sheet_url;
-      document.getElementById('loginScreen').classList.add('hidden');
-      document.getElementById('mainApp').classList.remove('hidden');
-      document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
-      document.getElementById('userLabel').textContent  = user;
-      document.getElementById('loginPassword').value    = '';
-      err.textContent = '';
-      initApp();
-    } else {
-      err.textContent = 'Username atau password salah.';
+    const user = document.getElementById('loginUsername').value.trim();
+    const pass = document.getElementById('loginPassword').value.trim();
+    const err = document.getElementById('loginError');
+    
+    if (!user || !pass) {
+        err.textContent = 'Username & Password wajib diisi!';
+        return;
     }
-  } catch(e) {
-    err.textContent = 'Koneksi bermasalah, coba lagi.';
-  }
+    
+    err.textContent = 'Memverifikasi... 🍯';
+    
+    try {
+        const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
+        const accounts = await res.json();
+        const found = accounts.find(a => a.username === user && a.password === pass);
+        
+        if (found) {
+            currentUser = found; 
+            SHEET_URL = found.sheet_url;
+            
+            // Sembunyikan login, tampilkan app
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            // Set Avatar & Label
+            document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
+            document.getElementById('userLabel').textContent = user;
+            
+            err.textContent = '';
+            initApp(); // Jalankan aplikasi
+        } else {
+            err.textContent = 'Username atau Password salah!';
+        }
+    } catch(e) {
+        console.error(e);
+        err.textContent = 'Server Error. Cek koneksi internet!';
+    }
 }
 
-document.getElementById('loginPassword').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
+// Support Enter Key buat Login
+document.getElementById('loginPassword')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
 });
 
-// ── LOGOUT ──
-function doLogout() {
-  if (!confirm('Yakin mau logout?')) return;
-  currentUser = null; SHEET_URL = ''; entries = [];
-  document.getElementById('mainApp').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('loginUsername').value = '';
-  closeModal('settingsModal');
-}
-
-// ── INIT ──
 function initApp() {
-  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
-  setEntryType('expense');
-  loadFromSheet();
+    document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+    setEntryType('expense');
+    loadFromSheet();
 }
+// ... lanjut ke fungsi loadFromSheet, renderHistory, dll ...
 
 // Update juga loadFromSheet supaya ngambil data status & reason
 async function loadFromSheet() {
