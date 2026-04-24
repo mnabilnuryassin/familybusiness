@@ -6,6 +6,16 @@
 <title>Yasiin Family Management System</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}  
 :root {
   --bg-main: #2D3E40;       /* Background Teal Gelap */
   --card-green: #97B299;    /* Hijau Sage */
@@ -40,6 +50,22 @@ body {
   transition: transform 0.2s;
 }
 
+.neu-card {
+  /* ... kode yang lama ... */
+  border-top: 2px solid rgba(255, 255, 255, 0.3); /* Pantulan cahaya atas */
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  transform: translateY(0);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Efek pas kartu ditekan (kerasa kenyal) */
+.neu-card:active {
+  transform: scale(0.95);
+  box-shadow: 
+    4px 4px 10px rgba(0,0,0,0.2), 
+    inset -5px -5px 10px rgba(0,0,0,0.1);
+}
+
 .neu-inset {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
@@ -67,6 +93,12 @@ body {
   display: flex; justify-content: space-around; align-items: center;
   border: 1px solid rgba(255, 255, 255, 0.1); z-index: 1000;
 }
+.bottom-nav {
+  /* ... kode yang lama ... */
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 -10px 25px rgba(0,0,0,0.2); /* Shadow ke atas biar nimbul */
+}  
 .nav-item { color: rgba(255, 255, 255, 0.3); font-size: 1.5rem; cursor: pointer; }
 .nav-item.active { color: var(--card-green); }
 .nav-add { 
@@ -354,6 +386,25 @@ function switchPanel(p, el) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); 
     el.classList.add('active'); 
 }
+function animateValue(id, start, end, duration) {
+    if (start === end) return;
+    const obj = document.getElementById(id);
+    const range = end - start;
+    let current = start;
+    const increment = end > start ? 1 : -1;
+    const stepTime = Math.abs(Math.floor(duration / range));
+    const timer = setInterval(function() {
+        current += (range / 10); // Biar cepet animasinya
+        if ((increment === 1 && current >= end) || (increment === -1 && current <= end)) {
+            current = end;
+            clearInterval(timer);
+        }
+        obj.textContent = 'Rp ' + Math.floor(current).toLocaleString('id-ID');
+    }, 30);
+}
+
+// Terus ganti baris updateSummary lu yang bagian sumBalance jadi:
+// animateValue('sumBalance', 0, (inc - exp), 500);  
 </script>
 </body>
 </html>
