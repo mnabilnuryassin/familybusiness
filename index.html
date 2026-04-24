@@ -309,40 +309,60 @@ function renderHistory() {
     const listFull = document.getElementById('historyListFull');
     const today = new Date().toISOString().split('T')[0];
 
+    // 1. FILTER UNTUK HOME (HANYA HARI INI)
     const todayEntries = entries.filter(e => e.date === today);
+
+    // 2. GROUPING UNTUK FULL HISTORY (SEMUA DATA)
     const grouped = {};
-    entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
+    entries.forEach(e => { 
+        if (!grouped[e.date]) grouped[e.date] = []; 
+        grouped[e.date].push(e); 
+    });
     const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
 
     const colors = ['bg-sage', 'bg-terra', 'bg-sand'];
 
+    // Template kartu flat
     const cardHTML = (e, i) => `
         <div class="clay-card ${colors[i % 3]}">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; gap:15px; align-items:center;">
                     <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem;">${e.catIcon}</div>
                     <div>
-                        <div style="font-weight:800; font-size:1rem;">${e.desc}</div>
-                        <div style="font-size:0.75rem; font-weight:600; opacity:0.6;">${e.catLabel}</div>
+                        <div style="font-weight:800; font-size:1rem; color:var(--text-dark);">${e.desc}</div>
+                        <div style="font-size:0.75rem; font-weight:600; opacity:0.6; color:var(--text-dark);">${e.catLabel}</div>
                     </div>
                 </div>
-                <div style="font-weight:900; font-size:1.1rem;">${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}</div>
+                <div style="font-weight:900; font-size:1.1rem; color:var(--text-dark);">
+                    ${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}
+                </div>
             </div>
         </div>`;
 
-    listHome.innerHTML = todayEntries.map(cardHTML).join('') || '<div style="text-align:center; opacity:0.3; padding:40px;">No activity today</div>';
+    // ISI LIST DI HOME (Today Only)
+    listHome.innerHTML = todayEntries.length > 0 
+        ? todayEntries.map(cardHTML).join('') 
+        : `<div style="text-align:center; opacity:0.3; padding:40px; font-weight:600;">
+            No activity today<br><span style="font-size:0.8rem;">(Belum ada transaksi hari ini)</span>
+           </div>`;
 
+    // ISI LIST DI TAB HISTORY (Full Data with Collapse)
     listFull.innerHTML = sortedDates.map(date => {
         const isToday = date === today;
+        const dateObj = new Date(date);
+        const formattedDate = dateObj.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'short' });
+        
         return `
-            <details style="margin-bottom:12px;" ${isToday ? 'open' : ''}>
-                <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 0; display:flex; justify-content:space-between; align-items:center;">
-                    <span>📅 ${isToday ? 'Hari Ini (Today)' : date}</span>
-                    <span style="font-size:0.7rem; opacity:0.5;">COLLAPSE ▾</span>
+            <details style="margin-bottom:15px;" ${isToday ? 'open' : ''}>
+                <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:10px 0; display:flex; justify-content:space-between; align-items:center; list-style:none;">
+                    <span>📅 ${isToday ? 'Today (Hari Ini)' : formattedDate}</span>
+                    <span style="font-size:0.7rem; opacity:0.5;">DETAIL ▾</span>
                 </summary>
-                <div style="margin-top:10px;">${grouped[date].map(cardHTML).join('')}</div>
+                <div style="margin-top:10px;">
+                    ${grouped[date].map(cardHTML).join('')}
+                </div>
             </details>`;
-    }).join('');
+    }).join('') || '<div style="text-align:center; opacity:0.3; padding:40px;">No transaction history.</div>';
 }
 
 function setEntryType(t) {
