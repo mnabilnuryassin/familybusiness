@@ -27,14 +27,12 @@ body {
   position: relative;
 }
 
-/* BACKGROUND DECORATION */
 body::before {
   content: ""; position: fixed; top: -50px; left: -50px;
   width: 250px; height: 250px; background: var(--card-sage);
   border-radius: 50%; filter: blur(80px); opacity: 0.1; z-index: -1;
 }
 
-/* FLAT CARD STYLE */
 .clay-card {
   background: var(--card-sage);
   border-radius: 35px;
@@ -49,9 +47,8 @@ body::before {
 .bg-terra { background-color: var(--card-terra); }
 .bg-sand { background-color: var(--card-sand); }
 
-/* SECTION ACTIVITY (Sesuai Request) */
 .activity-section {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255,255,255,0.04);
   margin: 25px -20px 0;
   padding: 35px 20px;
   border-radius: 45px 45px 0 0;
@@ -67,7 +64,6 @@ body::before {
   gap: 10px;
 }
 
-/* NAVBAR */
 .bottom-nav {
   position: fixed; bottom: 30px; left: 20px; right: 20px;
   background: #FAF7F2; height: 75px; border-radius: 35px;
@@ -75,274 +71,599 @@ body::before {
   box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 1000;
 }
 
-.nav-item { color: #A0A0A0; font-size: 1.6rem; cursor: pointer; }
+.nav-item { color: #A0A0A0; font-size: 1.6rem; cursor: pointer; transition: 0.2s; }
 .nav-item.active { color: var(--accent-teal); }
 
-.nav-add { 
-  background: var(--accent-teal); color: white !important; 
-  width: 65px; height: 65px; border-radius: 50%; 
-  display: flex; align-items: center; justify-content: center; 
-  font-size: 2rem; margin-top: -55px; 
-  box-shadow: 0 10px 20px rgba(79, 176, 172, 0.4);
+.nav-add {
+  background: var(--accent-teal); color: white !important;
+  width: 65px; height: 65px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; margin-top: -55px;
+  box-shadow: 0 10px 20px rgba(79,176,172,0.4);
   border: 6px solid var(--bg-deep);
+  cursor: pointer;
 }
 
 .container { padding: 0 20px; }
-.panel { display: none; }
+.panel { display: none; animation: fadeIn 0.3s ease; }
 .panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .hidden { display: none !important; }
 
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: flex-end; }
-.modal-content { background: #FAF7F2; width: 100%; border-radius: 45px 45px 0 0; padding: 40px 25px; color: var(--text-dark); }
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px); z-index: 2000;
+  display: flex; align-items: flex-end;
+}
 
-.neu-inset { background: #EAEAEA; border: none; border-radius: 20px; padding: 18px; width: 100%; margin-top: 5px; outline: none; }
-.type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
-.type-btn { padding: 15px; border-radius: 20px; background: #EAEAEA; font-weight: 800; border: none; text-align: center; }
+.modal-content {
+  background: #FAF7F2; width: 100%; border-radius: 45px 45px 0 0;
+  padding: 40px 25px 50px; color: var(--text-dark);
+  max-height: 90vh; overflow-y: auto;
+  animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.form-label { display: block; font-size: 0.7rem; font-weight: 800; margin: 15px 0 6px 4px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
+.neu-inset { background: #EAEAEA; border: none; border-radius: 18px; padding: 16px; width: 100%; outline: none; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; color: var(--text-dark); -webkit-appearance: none; }
+textarea.neu-inset { resize: none; }
+
+.type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.type-btn { padding: 15px; border-radius: 20px; background: #EAEAEA; font-weight: 800; border: none; text-align: center; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; color: var(--text-dark); transition: 0.2s; }
 .type-btn.active { background: var(--accent-teal); color: white; }
-.btn-submit { width: 100%; padding: 18px; background: var(--bg-deep); color: white; border: none; border-radius: 22px; font-weight: 800; margin-top: 25px; }
 
-.toast { position: fixed; bottom: 125px; left: 50%; transform: translateX(-50%); background: var(--accent-teal); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; opacity: 0; transition: 0.3s; }
-.toast.show { opacity: 1; }
+.label-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+.label-btn { padding: 13px; border-radius: 18px; background: #EAEAEA; font-weight: 800; border: none; text-align: center; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; color: var(--text-dark); transition: 0.2s; }
+.label-btn.active { background: var(--bg-deep); color: white; }
+
+.btn-submit { width: 100%; padding: 18px; background: var(--bg-deep); color: white; border: none; border-radius: 22px; font-weight: 800; margin-top: 25px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; transition: opacity 0.2s; }
+.btn-submit:active { opacity: 0.85; }
+
+/* Login screen */
+.login-screen { padding-top: 100px; text-align: center; }
+
+/* Settings modal */
+.settings-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: #EAEAEA; border-radius: 20px; margin-bottom: 12px; cursor: pointer; }
+.settings-row span { font-weight: 700; color: var(--text-dark); }
+.settings-logout { border: 2px solid var(--card-terra); background: transparent; color: var(--card-terra); }
+
+.toast { position: fixed; bottom: 125px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--accent-teal); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; opacity: 0; transition: 0.3s; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 summary { list-style: none; }
+
+/* Loading state */
+.loading-state { text-align: center; opacity: 0.4; padding: 60px 20px; font-size: 0.9rem; }
+
+/* Transaction card delete button */
+.del-btn { font-size: 0.65rem; color: rgba(45,62,64,0.35); cursor: pointer; margin-top: 5px; text-align: right; display: block; }
+.del-btn:active { color: var(--card-terra); }
+
+/* Badge */
+.badge { font-size: 0.6rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 3px; }
+.badge-needs { background: rgba(45,62,64,0.12); color: var(--text-dark); }
+.badge-lifestyle { background: rgba(217,131,93,0.2); color: var(--card-terra); }
+.badge-income { background: rgba(79,176,172,0.2); color: var(--accent-teal); }
 </style>
 </head>
 <body>
 
-<div id="loginScreen" class="container" style="padding-top: 100px; text-align: center;">
-    <div style="font-size: 4.5rem; margin-bottom: 20px;">🍯</div>
-    <h1 style="color: var(--card-sand); font-weight: 800;">Yasiin Family</h1>
-    <p style="opacity: 0.5; margin-bottom: 40px;">High Tech, High Love</p>
-    <div class="clay-card" style="background: white;">
-        <input type="text" id="loginUsername" class="neu-inset" placeholder="Username" style="margin-bottom: 15px;">
-        <input type="password" id="loginPassword" class="neu-inset" placeholder="Password">
-        <div id="loginError" style="color: #D9835D; font-size: 0.8rem; margin-top: 10px;"></div>
-        <button onclick="doLogin()" class="btn-submit" style="background: var(--accent-teal);">Masuk / Login</button>
-    </div>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="container login-screen">
+  <div style="font-size: 4.5rem; margin-bottom: 20px;">🍯</div>
+  <h1 style="color: var(--card-sand); font-weight: 800; font-size: 2rem;">Yasiin Family</h1>
+  <p style="opacity: 0.5; margin-bottom: 40px;">High Tech, High Love</p>
+  <div class="clay-card" style="background: white; text-align: left;">
+    <label class="form-label">Username</label>
+    <input type="text" id="loginUsername" class="neu-inset" placeholder="Masukkan username" autocomplete="username">
+    <label class="form-label">Password</label>
+    <input type="password" id="loginPassword" class="neu-inset" placeholder="••••••" autocomplete="current-password">
+    <div id="loginError" style="color: var(--card-terra); font-size: 0.82rem; margin-top: 10px; min-height: 18px; font-weight: 600;"></div>
+    <button onclick="doLogin()" class="btn-submit" style="background: var(--accent-teal);">Masuk 🚀</button>
+  </div>
 </div>
 
+<!-- MAIN APP -->
 <div id="mainApp" class="hidden">
-    <div class="top-bar container" style="padding-top: 40px; display: flex; justify-content: space-between; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <div id="userAvatar" style="width: 50px; height: 50px; background: var(--card-sand); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-weight: 800; font-size: 1.4rem;">Y</div>
-            <div>
-                <div style="font-size: 0.8rem; opacity: 0.6;">Welcome back,</div>
-                <div id="userLabel" style="font-size: 1.2rem; font-weight: 800;">User</div>
-            </div>
-        </div>
-        <div onclick="openSettings()" style="font-size: 1.5rem; cursor: pointer;">⚙️</div>
+  <div class="container" style="padding-top: 40px; display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div id="userAvatar" style="width: 50px; height: 50px; background: var(--card-sand); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: var(--text-dark); font-weight: 800; font-size: 1.4rem;">Y</div>
+      <div>
+        <div style="font-size: 0.8rem; opacity: 0.6;">Welcome back,</div>
+        <div id="userLabel" style="font-size: 1.2rem; font-weight: 800;">User</div>
+      </div>
     </div>
+    <div onclick="openSettings()" style="font-size: 1.5rem; cursor: pointer;">⚙️</div>
+  </div>
 
-    <div id="panel-home" class="panel active container">
-        <div class="clay-card bg-sand" style="text-align: center; padding: 40px 20px; margin-top: 25px;">
-            <div style="font-size: 0.75rem; font-weight: 800; opacity: 0.6; letter-spacing: 1px;">TOTAL BALANCE</div>
-            <div id="sumBalance" style="font-size: 2.6rem; font-weight: 900; letter-spacing: -1.5px;">Rp 0</div>
-            <div style="display: flex; justify-content: center; gap: 25px; font-weight: 800; margin-top: 15px;">
-                <div style="color: #2D3E40; font-size: 0.9rem;">↑ <span id="sumIncome">0</span></div>
-                <div style="color: #2D3E40; font-size: 0.9rem;">↓ <span id="sumExpense">0</span></div>
-            </div>
-        </div>
-
-        <div class="activity-section">
-            <h3 class="section-title">Today's Activity <span style="font-size: 0.6rem; background: var(--accent-teal); color: white; padding: 4px 10px; border-radius: 20px;">HARI INI</span></h3>
-            <div id="historyListHome"></div> </div>
+  <!-- HOME PANEL -->
+  <div id="panel-home" class="panel active container">
+    <div class="clay-card bg-sand" style="text-align: center; padding: 40px 20px; margin-top: 25px;">
+      <div style="font-size: 0.75rem; font-weight: 800; opacity: 0.6; letter-spacing: 1px;">TOTAL BALANCE</div>
+      <div id="sumBalance" style="font-size: 2.6rem; font-weight: 900; letter-spacing: -1.5px;">Rp 0</div>
+      <div style="display: flex; justify-content: center; gap: 25px; font-weight: 700; margin-top: 15px;">
+        <div style="color: var(--text-dark); font-size: 0.9rem;">↑ <span id="sumIncome">0</span></div>
+        <div style="color: var(--text-dark); font-size: 0.9rem;">↓ <span id="sumExpense">0</span></div>
+      </div>
     </div>
-
-    <div id="panel-history" class="panel container">
-        <h2 style="margin: 30px 0 20px; font-weight: 800; font-size: 1.8rem; color: var(--card-sand);">Full History (Riwayat)</h2>
-        <div id="historyListFull"></div> </div>
-    
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPanel('home', this)">🏠</div>
-        <div class="nav-add" onclick="openAddModal()">+</div>
-        <div class="nav-item" onclick="switchPanel('history', this)">📋</div>
+    <div class="activity-section">
+      <h3 class="section-title">Today's Activity
+        <span style="font-size: 0.6rem; background: var(--accent-teal); color: white; padding: 4px 10px; border-radius: 20px;">HARI INI</span>
+      </h3>
+      <div id="historyListHome"></div>
     </div>
+  </div>
+
+  <!-- HISTORY PANEL -->
+  <div id="panel-history" class="panel container">
+    <h2 style="margin: 30px 0 20px; font-weight: 800; font-size: 1.8rem; color: var(--card-sand);">Full History</h2>
+    <div id="historyListFull"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchPanel('home', this)">🏠</div>
+    <div class="nav-add" onclick="openAddModal()">+</div>
+    <div class="nav-item" onclick="switchPanel('history', this)">📋</div>
+  </div>
 </div>
 
-<div id="addModal" class="modal-overlay hidden" onclick="closeModalOnOut(event, 'addModal')">
-    <div class="modal-content">
-        <h2 style="font-weight: 800; margin-bottom: 20px;">New Record</h2>
-        <div class="type-grid">
-            <div id="btnExp" class="type-btn active" onclick="setEntryType('expense')">💸 Out</div>
-            <div id="btnInc" class="type-btn" onclick="setEntryType('income')">💵 In</div>
-        </div>
-        <label style="display:block; font-size:0.7rem; font-weight:800; margin-top:15px; opacity:0.5;">CATEGORY</label>
-        <select id="selectCatExp" class="neu-inset"></select>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-            <div><label style="font-size:0.7rem; font-weight:800; opacity:0.5;">AMOUNT</label><input type="number" id="inputAmount" class="neu-inset"></div>
-            <div><label style="font-size:0.7rem; font-weight:800; opacity:0.5;">DATE</label><input type="date" id="inputDate" class="neu-inset"></div>
-        </div>
-        <label style="display:block; font-size:0.7rem; font-weight:800; margin-top:15px; opacity:0.5;">DESCRIPTION</label>
-        <textarea id="inputDesc" class="neu-inset" style="height: 70px; resize: none;"></textarea>
-        <button onclick="saveEntry()" class="btn-submit">Confirm Transaction</button>
+<!-- ADD MODAL -->
+<div id="addModal" class="modal-overlay hidden" onclick="closeModalOnOut(event,'addModal')">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 style="font-weight: 800;">New Record</h2>
+      <div onclick="closeModal('addModal')" style="cursor:pointer; opacity:0.4; font-size:1.2rem;">✕</div>
     </div>
+
+    <div class="type-grid">
+      <div id="btnExp" class="type-btn active" onclick="setEntryType('expense')">💸 Pengeluaran</div>
+      <div id="btnInc" class="type-btn" onclick="setEntryType('income')">💵 Pemasukan</div>
+    </div>
+
+    <label class="form-label">Category</label>
+    <select id="selectCatExp" class="neu-inset" onchange="onCatChange()"></select>
+
+    <div id="customSourceWrap" class="hidden">
+      <label class="form-label">Sumber Spesifik</label>
+      <input type="text" id="inputCustomSource" class="neu-inset" placeholder="Misal: bonus, dikasih sodara...">
+    </div>
+
+    <div id="labelWrap">
+      <label class="form-label">Label</label>
+      <div class="label-grid">
+        <div id="btnNeeds" class="label-btn active" onclick="setLabel('needs')">🏡 Needs</div>
+        <div id="btnLifestyle" class="label-btn" onclick="setLabel('lifestyle')">✨ Lifestyle</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:5px;">
+      <div>
+        <label class="form-label">Amount (Rp)</label>
+        <input type="text" inputmode="numeric" id="inputAmount" class="neu-inset" placeholder="0" oninput="formatAmount(this)">
+      </div>
+      <div>
+        <label class="form-label">Date</label>
+        <input type="date" id="inputDate" class="neu-inset">
+      </div>
+    </div>
+
+    <label class="form-label">Description</label>
+    <textarea id="inputDesc" class="neu-inset" style="height:70px;" id="inputDesc"></textarea>
+
+    <button onclick="saveEntry()" class="btn-submit">Confirm Transaction ✓</button>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal-overlay hidden" onclick="closeModalOnOut(event,'settingsModal')">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+      <h2 style="font-weight:800;">Settings</h2>
+      <div onclick="closeModal('settingsModal')" style="cursor:pointer; opacity:0.4; font-size:1.2rem;">✕</div>
+    </div>
+
+    <div class="settings-row">
+      <span>👤 Username</span>
+      <span id="settingUser" style="opacity:0.5;"></span>
+    </div>
+
+    <div id="pwdTriggerRow" class="settings-row" onclick="showPwdFields()">
+      <span>🔑 Change Password</span>
+      <span style="opacity:0.4;">›</span>
+    </div>
+
+    <div id="pwdSection" class="hidden">
+      <label class="form-label">New Password</label>
+      <input type="password" id="newPwd" class="neu-inset" placeholder="Min. 4 karakter">
+      <label class="form-label">Confirm Password</label>
+      <input type="password" id="confirmPwd" class="neu-inset" placeholder="Ulangi password baru">
+      <div id="pwdError" style="color:var(--card-terra); font-size:0.8rem; margin-top:8px; min-height:16px; font-weight:600;"></div>
+      <button onclick="confirmNewPwd()" class="btn-submit" style="margin-top:15px;">Update Password</button>
+      <button onclick="hidePwdFields()" style="width:100%; padding:14px; background:transparent; border:none; color:var(--text-dark); opacity:0.5; margin-top:8px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif;">Batal</button>
+    </div>
+
+    <button onclick="doLogout()" class="btn-submit settings-logout" style="margin-top:10px;">🚪 Logout</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-let currentUser = null, SHEET_URL = '', entries = [], currentEntryType = 'expense';
-
-const CATS_EXPENSE = [
-  { id:'makanan', label:'Food & Drink (Makan)', icon:'🍱' },
-  { id:'restoran', label:'Dining Out (Jajan)', icon:'🍽️' },
-  { id:'rumah', label:'Household (Rumah)', icon:'🏠' },
-  { id:'transportasi', label:'Travel (Transport)', icon:'🚗' },
-  { id:'kesehatan', label:'Medical (Kesehatan)', icon:'💊' },
-  { id:'hiburan', label:'Entertainment (Hiburan)', icon:'🎬' }
-];
-
+// ── CONFIG ──
 const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
 
+const CATS_EXPENSE = [
+  { id:'makanan',      label:'Makanan & Minuman',      icon:'🍱' },
+  { id:'restoran',     label:'Restoran & Take Out',     icon:'🍽️' },
+  { id:'kebersihan',   label:'Kebersihan & Perawatan',  icon:'🧴' },
+  { id:'rumah',        label:'Kebutuhan Rumah Tangga',  icon:'🏠' },
+  { id:'transportasi', label:'Transportasi',            icon:'🚗' },
+  { id:'pakaian',      label:'Pakaian & Laundry',       icon:'👗' },
+  { id:'hiburan',      label:'Hiburan',                 icon:'🎬' },
+  { id:'kesehatan',    label:'Kesehatan',               icon:'💊' },
+  { id:'pendidikan',   label:'Pendidikan',              icon:'📚' },
+  { id:'komunikasi',   label:'Komunikasi',              icon:'📱' },
+  { id:'hadiah',       label:'Hadiah & Acara Sosial',   icon:'🎁' },
+  { id:'hutang',       label:'Hutang (kita berhutang)', icon:'📤' },
+  { id:'piutang',      label:'Piutang (kita minjemin)', icon:'📥' },
+];
+
+// ── STATE ──
+let currentUser = null;
+let SHEET_URL = '';
+let entries = [];
+let currentEntryType = 'expense';
+let selectedINL = 'needs';
+
+// ── LOGIN ──
 async function doLogin() {
-    const user = document.getElementById('loginUsername').value.trim();
-    const pass = document.getElementById('loginPassword').value.trim();
-    const err = document.getElementById('loginError');
-    if (!user || !pass) return;
-    err.textContent = 'Verifying...';
-    try {
-        const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
-        const accounts = await res.json();
-        const found = accounts.find(a => a.username === user && a.password === pass);
-        if (found) {
-            currentUser = found; SHEET_URL = found.sheet_url;
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
-            document.getElementById('userLabel').textContent = user;
-            initApp();
-        } else { err.textContent = 'Invalid account'; }
-    } catch(e) { err.textContent = 'Server Error'; }
+  const user = document.getElementById('loginUsername').value.trim();
+  const pass = document.getElementById('loginPassword').value.trim();
+  const err  = document.getElementById('loginError');
+  if (!user || !pass) { err.textContent = 'Username & password wajib diisi.'; return; }
+
+  err.textContent = 'Memverifikasi...';
+  try {
+    const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
+    const accounts = await res.json();
+    const found = accounts.find(a => a.username === user && a.password === pass);
+    if (found) {
+      currentUser = found;
+      SHEET_URL   = found.sheet_url;
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
+      document.getElementById('userLabel').textContent  = user;
+      document.getElementById('loginPassword').value    = '';
+      err.textContent = '';
+      initApp();
+    } else {
+      err.textContent = 'Username atau password salah.';
+    }
+  } catch(e) {
+    err.textContent = 'Koneksi bermasalah, coba lagi.';
+  }
 }
 
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ── LOGOUT ──
+function doLogout() {
+  if (!confirm('Yakin mau logout?')) return;
+  currentUser = null; SHEET_URL = ''; entries = [];
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginUsername').value = '';
+  closeModal('settingsModal');
+}
+
+// ── INIT ──
 function initApp() {
-    document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
-    setEntryType('expense'); loadFromSheet();
+  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+  setEntryType('expense');
+  loadFromSheet();
 }
 
+// ── LOAD ──
 async function loadFromSheet() {
-    try {
-        const res = await fetch(SHEET_URL + '?t=' + Date.now());
-        const data = await res.json();
-        entries = data.map(r => ({
-            id: r.id, date: r.date.split('T')[0], type: r.type, 
-            catLabel: r.catLabel, catIcon: r.catIcon || '💰', 
-            amount: parseFloat(r.amount), desc: r.desc 
-        }));
-        updateSummary(); renderHistory();
-    } catch(e) {}
+  document.getElementById('historyListHome').innerHTML = '<div class="loading-state">⏳ Memuat data...</div>';
+  document.getElementById('historyListFull').innerHTML = '<div class="loading-state">⏳ Memuat data...</div>';
+  try {
+    const res  = await fetch(SHEET_URL + '?t=' + Date.now());
+    const data = await res.json();
+    entries = data.map(r => ({
+      id:       r.id,
+      date:     formatDateFromSheet(r.date),
+      type:     r.type,
+      catLabel: r.catLabel  || '',
+      catIcon:  r.catIcon   || (r.type === 'income' ? '💵' : '💸'),
+      inlLabel: r.inlLabel  || '',
+      amount:   parseFloat(r.amount) || 0,
+      desc:     r.desc || ''
+    }));
+    updateSummary();
+    renderHistory();
+  } catch(e) {
+    showToast('⚠️ Gagal muat data');
+    document.getElementById('historyListHome').innerHTML = '<div class="loading-state">Gagal memuat. Cek koneksi.</div>';
+    document.getElementById('historyListFull').innerHTML = '<div class="loading-state">Gagal memuat. Cek koneksi.</div>';
+  }
 }
 
+function formatDateFromSheet(val) {
+  if (!val) return '';
+  if (typeof val === 'string') {
+    // Handle DD/MM/YYYY from sheet
+    if (val.match(/^\d{2}\/\d{2}\/\d{4}/)) {
+      const [d, m, y] = val.split('/');
+      return `${y}-${m}-${d}`;
+    }
+    if (val.match(/^\d{4}-\d{2}-\d{2}/)) return val.substring(0, 10);
+  }
+  const d = new Date(val);
+  if (!isNaN(d)) {
+    // Gunakan UTC supaya tidak geser timezone
+    const yyyy = d.getUTCFullYear();
+    const mm   = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const dd   = String(d.getUTCDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  return String(val);
+}
+
+// ── SAVE ──
+async function saveEntry() {
+  const rawAmount = document.getElementById('inputAmount').value.replace(/\./g, '');
+  const amount    = parseInt(rawAmount);
+  const date      = document.getElementById('inputDate').value;
+  const desc      = document.getElementById('inputDesc').value.trim();
+  const catSel    = document.getElementById('selectCatExp');
+  const customSrc = document.getElementById('inputCustomSource').value.trim();
+
+  if (!amount || amount <= 0) { showToast('⚠️ Isi jumlah dulu!'); return; }
+  if (!date)                  { showToast('⚠️ Pilih tanggal dulu!'); return; }
+  if (currentEntryType === 'expense' && !desc) { showToast('⚠️ Keterangan wajib untuk pengeluaran!'); return; }
+  if (currentEntryType === 'income' && catSel.value === 'lain' && !customSrc) {
+    showToast('⚠️ Isi sumber pendapatannya!'); return;
+  }
+
+  let catLabel, catIcon;
+  if (currentEntryType === 'expense') {
+    const cat = CATS_EXPENSE.find(c => c.id === catSel.value);
+    catLabel  = cat ? cat.label : '';
+    catIcon   = cat ? cat.icon  : '💸';
+  } else {
+    catLabel = catSel.value === 'lain' ? customSrc : 'Dari Apih';
+    catIcon  = '💵';
+  }
+
+  const entry = {
+    id: Date.now(), type: currentEntryType, date, catLabel, catIcon,
+    inlLabel: currentEntryType === 'expense' ? (selectedINL === 'needs' ? 'Needs' : 'Lifestyle') : 'Income',
+    amount, desc: desc || '-'
+  };
+
+  entries.unshift(entry);
+  updateSummary();
+  renderHistory();
+  closeModal('addModal');
+  resetForm();
+  showToast('💾 Menyimpan...');
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    });
+    showToast('✅ Tersimpan!');
+  } catch(e) {
+    showToast('❌ Gagal kirim ke Sheet');
+  }
+}
+
+// ── DELETE ──
+async function deleteEntry(id) {
+  if (!confirm('Hapus transaksi ini?')) return;
+  entries = entries.filter(e => String(e.id) !== String(id));
+  updateSummary();
+  renderHistory();
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete', id })
+    });
+  } catch(e) {}
+}
+
+// ── RENDER ──
 function renderHistory() {
-    const listHome = document.getElementById('historyListHome');
-    const listFull = document.getElementById('historyListFull');
-    const today = new Date().toISOString().split('T')[0];
+  const today   = new Date().toISOString().split('T')[0];
+  const colors  = ['bg-sage', 'bg-terra', 'bg-sand'];
 
-    // Filter khusus hari ini (Today)
-    const todayEntries = entries.filter(e => e.date === today);
+  const cardHTML = (e, i) => {
+    const badgeClass = e.type === 'income' ? 'badge-income' : (e.inlLabel === 'Needs' ? 'badge-needs' : 'badge-lifestyle');
+    return `
+    <div class="clay-card ${colors[i % 3]}" style="padding:18px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; gap:14px; align-items:center; flex:1; min-width:0;">
+          <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">${e.catIcon}</div>
+          <div style="min-width:0;">
+            <div style="font-weight:800; font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${e.desc || '—'}</div>
+            <div style="font-size:0.72rem; font-weight:600; opacity:0.65; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${e.catLabel}</div>
+            <span class="badge ${badgeClass}">${e.inlLabel || ''}</span>
+          </div>
+        </div>
+        <div style="text-align:right; flex-shrink:0; margin-left:10px;">
+          <div style="font-weight:900; font-size:1rem;">${e.type==='income'?'+':'−'}Rp ${e.amount.toLocaleString('id-ID')}</div>
+          <span class="del-btn" onclick="deleteEntry(${e.id})">✕ hapus</span>
+        </div>
+      </div>
+    </div>`;
+  };
 
-    // Grouping semua data (Full History)
-    const grouped = {};
-    entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
-    const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+  // Today
+  const todayEntries = entries.filter(e => e.date === today);
+  const listHome = document.getElementById('historyListHome');
+  listHome.innerHTML = todayEntries.length
+    ? todayEntries.map((e,i) => cardHTML(e,i)).join('')
+    : '<div class="loading-state">Belum ada transaksi hari ini 🌱</div>';
 
-    const colors = ['bg-sage', 'bg-terra', 'bg-sand'];
-    const cardHTML = (e, i) => `
-        <div class="clay-card ${colors[i % 3]}">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; gap:15px; align-items:center;">
-                    <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem;">${e.catIcon}</div>
-                    <div>
-                        <div style="font-weight:800; font-size:1rem;">${e.desc}</div>
-                        <div style="font-size:0.75rem; font-weight:600; opacity:0.6;">${e.catLabel}</div>
-                    </div>
-                </div>
-                <div style="font-weight:900; font-size:1.1rem;">${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}</div>
-            </div>
-        </div>`;
-
-    // Render Home (Today's Activity)
-    listHome.innerHTML = todayEntries.length ? todayEntries.map(cardHTML).join('') : '<div style="text-align:center; opacity:0.3; padding:40px;">Belum ada transaksi hari ini</div>';
-
-    // Render Tab History (Full Data)
-    listFull.innerHTML = sortedDates.map(date => {
-        const isToday = date === today;
-        return `
-            <details style="margin-bottom:12px;" ${isToday ? 'open' : ''}>
-                <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 0; display:flex; justify-content:space-between; align-items:center;">
-                    <span>📅 ${isToday ? 'Today (Hari Ini)' : date}</span>
-                    <span style="font-size:0.7rem; opacity:0.5;">DETAIL ▾</span>
-                </summary>
-                <div style="margin-top:10px;">${grouped[date].map(cardHTML).join('')}</div>
-            </details>`;
-    }).join('');
+  // Full
+  const grouped = {};
+  entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
+  const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+  const listFull = document.getElementById('historyListFull');
+  listFull.innerHTML = sortedDates.length ? sortedDates.map(date => {
+    const label = date === today ? 'Today (Hari Ini)' : new Date(date + 'T00:00:00').toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long'});
+    return `
+      <details style="margin-bottom:14px;" ${date === today ? 'open' : ''}>
+        <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 4px; display:flex; justify-content:space-between; align-items:center; user-select:none;">
+          <span>📅 ${label}</span>
+          <span style="font-size:0.7rem; opacity:0.5;">▾</span>
+        </summary>
+        <div style="margin-top:10px;">${grouped[date].map((e,i) => cardHTML(e,i)).join('')}</div>
+      </details>`;
+  }).join('') : '<div class="loading-state">Belum ada data 📭</div>';
 }
 
+// ── SUMMARY ──
+function updateSummary() {
+  const inc = entries.filter(e => e.type==='income').reduce((s,e) => s + e.amount, 0);
+  const exp = entries.filter(e => e.type==='expense').reduce((s,e) => s + e.amount, 0);
+  const bal = inc - exp;
+  animateValue('sumBalance', bal);
+  document.getElementById('sumIncome').textContent  = 'Rp ' + inc.toLocaleString('id-ID');
+  document.getElementById('sumExpense').textContent = 'Rp ' + exp.toLocaleString('id-ID');
+}
+
+function animateValue(id, end) {
+  const el = document.getElementById(id);
+  const start = 0, duration = 500;
+  let startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    const p = Math.min((ts - startTime) / duration, 1);
+    el.textContent = 'Rp ' + Math.floor(p * end).toLocaleString('id-ID');
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ── FORM ──
 function setEntryType(t) {
-    currentEntryType = t;
-    document.getElementById('btnExp').classList.toggle('active', t==='expense');
-    document.getElementById('btnInc').classList.toggle('active', t==='income');
-    renderCats();
+  currentEntryType = t;
+  document.getElementById('btnExp').classList.toggle('active', t==='expense');
+  document.getElementById('btnInc').classList.toggle('active', t==='income');
+  document.getElementById('labelWrap').style.display = t==='expense' ? 'block' : 'none';
+  document.getElementById('customSourceWrap').classList.add('hidden');
+  document.getElementById('inputDesc').placeholder = t==='expense' ? 'Duitnya dipake buat apa?' : 'Keterangan (opsional)';
+  renderCats();
+}
+
+function setLabel(val) {
+  selectedINL = val;
+  document.getElementById('btnNeeds').classList.toggle('active', val==='needs');
+  document.getElementById('btnLifestyle').classList.toggle('active', val==='lifestyle');
 }
 
 function renderCats() {
-    const s = document.getElementById('selectCatExp');
-    s.innerHTML = currentEntryType==='expense' ? 
-        CATS_EXPENSE.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('') :
-        '<option value="apih">👨 From Apih</option><option value="lain">✏️ Others</option>';
+  const s = document.getElementById('selectCatExp');
+  s.innerHTML = currentEntryType === 'expense'
+    ? CATS_EXPENSE.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('')
+    : '<option value="apih">👨 Dari Apih</option><option value="lain">✏️ Sumber Lain</option>';
 }
 
-async function saveEntry() {
-    const amount = parseInt(document.getElementById('inputAmount').value);
-    const date = document.getElementById('inputDate').value;
-    const desc = document.getElementById('inputDesc').value.trim();
-    const catSelect = document.getElementById('selectCatExp');
-
-    if (!amount || !date) { showToast('⚠️ Data tidak lengkap!'); return; }
-    
-    let catLabel = catSelect.options[catSelect.selectedIndex].text;
-    const entry = {
-        id: Date.now(), type: currentEntryType, date,
-        catLabel: currentEntryType==='income' ? catLabel : catLabel.split(' ').slice(1).join(' '),
-        catIcon: currentEntryType==='income' ? '💵' : catLabel.split(' ')[0],
-        amount, desc: desc || "-",
-    };
-
-    showToast('💾 Saving...');
-    entries.unshift(entry); updateSummary(); renderHistory(); closeModal('addModal');
-    try { await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(entry) }); showToast('✅ Success!'); } catch(e) { showToast('❌ Error!'); }
+function onCatChange() {
+  const val  = document.getElementById('selectCatExp').value;
+  const show = currentEntryType === 'income' && val === 'lain';
+  document.getElementById('customSourceWrap').classList.toggle('hidden', !show);
 }
 
-function updateSummary() {
-    const inc = entries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
-    const exp = entries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-    animateValue('sumBalance', 0, (inc - exp), 500);
-    document.getElementById('sumIncome').textContent = inc.toLocaleString('id-ID');
-    document.getElementById('sumExpense').textContent = exp.toLocaleString('id-ID');
+function formatAmount(el) {
+  const raw = el.value.replace(/\D/g, '');
+  el.value  = raw ? parseInt(raw).toLocaleString('id-ID') : '';
 }
 
-function animateValue(id, start, end, duration) {
-    const obj = document.getElementById(id);
-    const range = end - start;
-    let startTime = null;
-    function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        obj.textContent = 'Rp ' + Math.floor(progress * range + start).toLocaleString('id-ID');
-        if (progress < 1) window.requestAnimationFrame(step);
-    }
-    window.requestAnimationFrame(step);
+function resetForm() {
+  document.getElementById('inputAmount').value = '';
+  document.getElementById('inputDesc').value   = '';
+  document.getElementById('inputCustomSource').value = '';
+  document.getElementById('customSourceWrap').classList.add('hidden');
+  setEntryType('expense');
+  setLabel('needs');
 }
 
-function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
-function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
-function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-function closeModalOnOut(e, id) { if(e.target.id === id) closeModal(id); }
-function switchPanel(p, el) { 
-    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active')); 
-    document.getElementById('panel-'+p).classList.add('active'); 
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); 
-    el.classList.add('active'); 
+// ── SETTINGS ──
+function openSettings() {
+  document.getElementById('settingUser').textContent = currentUser ? currentUser.username : '';
+  document.getElementById('pwdSection').classList.add('hidden');
+  document.getElementById('pwdTriggerRow').classList.remove('hidden');
+  document.getElementById('newPwd').value      = '';
+  document.getElementById('confirmPwd').value  = '';
+  document.getElementById('pwdError').textContent = '';
+  document.getElementById('settingsModal').classList.remove('hidden');
+}
+
+function showPwdFields() {
+  document.getElementById('pwdSection').classList.remove('hidden');
+  document.getElementById('pwdTriggerRow').classList.add('hidden');
+}
+
+function hidePwdFields() {
+  document.getElementById('pwdSection').classList.add('hidden');
+  document.getElementById('pwdTriggerRow').classList.remove('hidden');
+}
+
+async function confirmNewPwd() {
+  const newPass  = document.getElementById('newPwd').value.trim();
+  const confPass = document.getElementById('confirmPwd').value.trim();
+  const errEl    = document.getElementById('pwdError');
+  if (!newPass)                   { errEl.textContent = 'Isi password baru.'; return; }
+  if (newPass.length < 4)         { errEl.textContent = 'Minimal 4 karakter.'; return; }
+  if (newPass !== confPass)       { errEl.textContent = 'Password tidak cocok.'; return; }
+  try {
+    await fetch(ACCOUNTS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: currentUser.username, new_password: newPass })
+    });
+    showToast('✅ Password berhasil diubah!');
+    hidePwdFields();
+    closeModal('settingsModal');
+  } catch(e) {
+    errEl.textContent = 'Gagal. Coba lagi.';
+  }
+}
+
+// ── MODAL & NAV ──
+function openAddModal() {
+  resetForm();
+  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('addModal').classList.remove('hidden');
+}
+
+function closeModal(id)         { document.getElementById(id).classList.add('hidden'); }
+function closeModalOnOut(e, id) { if (e.target.id === id) closeModal(id); }
+
+function switchPanel(p, el) {
+  document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+  document.getElementById('panel-' + p).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 </script>
 </body>
