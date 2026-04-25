@@ -99,8 +99,22 @@ summary { list-style: none; }
       <div id="sumBalance" style="font-size: 2.6rem; font-weight: 900; letter-spacing: -1.5px;">Rp 0</div>
       <div style="display: flex; justify-content: center; gap: 25px; font-weight: 700; margin-top: 15px;">
         <div style="display: flex; justify-content: center; gap: 25px; font-weight: 800; margin-top: 15px;">
-    <div id="sumIncome" style="color: #2D3E40; font-size: 0.9rem;">IN 0</div>
-    <div id="sumExpense" style="color: #2D3E40; font-size: 0.9rem;">OUT 0</div>
+   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(45,62,64,0.1);">
+    <div>
+        <div style="font-size: 0.65rem; font-weight: 800; opacity: 0.5; letter-spacing: 1px; margin-bottom: 5px;">IN (MASUK)</div>
+        <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-dark);">
+            <span style="font-size: 0.8rem; opacity: 0.6; margin-right: 2px;">Rp</span>
+            <span id="sumIncome">0</span>
+        </div>
+    </div>
+    <div>
+        <div style="font-size: 0.65rem; font-weight: 800; opacity: 0.5; letter-spacing: 1px; margin-bottom: 5px;">OUT (KELUAR)</div>
+        <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-dark);">
+            <span style="font-size: 0.8rem; opacity: 0.6; margin-right: 2px;">Rp</span>
+            <span id="sumExpense">0</span>
+        </div>
+    </div>
+</div>
 </div>
       </div>
     </div>
@@ -494,9 +508,10 @@ function updateSummary() {
   const exp = active.filter(e => e.type==='expense').reduce((s,e) => s+e.amount, 0);
   const bal = inc - exp;
   animateValue('sumBalance', bal);
-  // Ganti bagian ini di dalam updateSummary()
-document.getElementById('sumIncome').innerHTML = `<small style="font-weight:700; opacity:0.5;">IN </small> ${inc.toLocaleString('id-ID')}`;
-document.getElementById('sumExpense').innerHTML = `<small style="font-weight:700; opacity:0.5;">OUT </small> ${exp.toLocaleString('id-ID')}`;
+  // Di dalam fungsi updateSummary()
+// Cukup update angkanya saja karena label sudah ada di HTML
+document.getElementById('sumIncome').textContent = inc.toLocaleString('id-ID');
+document.getElementById('sumExpense').textContent = exp.toLocaleString('id-ID');
 }
 
 function animateValue(id, end) {
