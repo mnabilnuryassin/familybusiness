@@ -325,6 +325,7 @@ summary { list-style: none; }
 
 <script>
 <script>
+  <script>
 // --- STATE & CONFIG ---
 let currentUser = null, SHEET_URL = '', entries = [], currentEntryType = 'expense', selectedINL = 'needs';
 
@@ -396,21 +397,6 @@ function initApp() {
     loadFromSheet();
 }
 // ... lanjut ke fungsi loadFromSheet, renderHistory, dll ...
-
-// Update juga loadFromSheet supaya ngambil data status & reason
-async function loadFromSheet() {
-    try {
-        const res = await fetch(SHEET_URL + '?t=' + Date.now());
-        const data = await res.json();
-        entries = data.map(r => ({
-            id: r.id, date: r.date, type: r.type, 
-            catLabel: r.catLabel, catIcon: r.catIcon, 
-            amount: parseFloat(r.amount), desc: r.desc,
-            status: r.status, reason: r.reason // TAMBAH INI
-        }));
-        updateSummary(); renderHistory();
-    } catch(e) {}
-}
 
 function formatDateFromSheet(val) {
   if (!val) return '';
