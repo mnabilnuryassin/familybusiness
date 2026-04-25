@@ -495,8 +495,8 @@ function updateSummary() {
   const bal = inc - exp;
   animateValue('sumBalance', bal);
   // Ganti bagian ini di dalam updateSummary()
-document.getElementById('sumIncome').innerHTML = `<small style="font-weight:700; opacity:0.5;">IN </small> ${inc.toLocaleString('id-ID')}`;
-document.getElementById('sumExpense').innerHTML = `<small style="font-weight:700; opacity:0.5;">OUT </small> ${exp.toLocaleString('id-ID')}`;
+document.getElementById('sumIncome').innerHTML = `<small style="font-weight:700; opacity:0.5;">IN Rp </small> ${inc.toLocaleString('id-ID')}`;
+document.getElementById('sumExpense').innerHTML = `<small style="font-weight:700; opacity:0.5;">OUT Rp </small> ${exp.toLocaleString('id-ID')}`;
 }
 
 function animateValue(id, end) {
