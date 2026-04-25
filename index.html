@@ -15,147 +15,48 @@
   --text-dark: #2D3E40;
   --text-white: #FAF7F2;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-body {
-  background-color: var(--bg-deep);
-  color: var(--text-white);
-  min-height: 100vh;
-  padding-bottom: 120px;
-  overflow-x: hidden;
-  position: relative;
-}
-
-body::before {
-  content: ""; position: fixed; top: -50px; left: -50px;
-  width: 250px; height: 250px; background: var(--card-sage);
-  border-radius: 50%; filter: blur(80px); opacity: 0.1; z-index: -1;
-}
-
-.clay-card {
-  background: var(--card-sage);
-  border-radius: 35px;
-  padding: 22px;
-  border: none;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-  color: var(--text-dark);
-  margin-bottom: 18px;
-}
-
+body { background-color: var(--bg-deep); color: var(--text-white); min-height: 100vh; padding-bottom: 120px; overflow-x: hidden; position: relative; }
+body::before { content: ""; position: fixed; top: -50px; left: -50px; width: 250px; height: 250px; background: var(--card-sage); border-radius: 50%; filter: blur(80px); opacity: 0.1; z-index: -1; }
+.clay-card { background: var(--card-sage); border-radius: 35px; padding: 22px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.15); color: var(--text-dark); margin-bottom: 18px; }
 .bg-sage { background-color: var(--card-sage); }
 .bg-terra { background-color: var(--card-terra); }
 .bg-sand { background-color: var(--card-sand); }
-
-.activity-section {
-  background: rgba(255,255,255,0.04);
-  margin: 25px -20px 0;
-  padding: 35px 20px;
-  border-radius: 45px 45px 0 0;
-  min-height: 400px;
-}
-
-.section-title {
-  font-size: 1.3rem;
-  font-weight: 800;
-  margin-bottom: 22px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.bottom-nav {
-  position: fixed; bottom: 30px; left: 20px; right: 20px;
-  background: #FAF7F2; height: 75px; border-radius: 35px;
-  display: flex; justify-content: space-around; align-items: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 1000;
-}
-
+.activity-section { background: rgba(255,255,255,0.04); margin: 25px -20px 0; padding: 35px 20px; border-radius: 45px 45px 0 0; min-height: 400px; }
+.section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 22px; display: flex; align-items: center; gap: 10px; }
+.bottom-nav { position: fixed; bottom: 30px; left: 20px; right: 20px; background: #FAF7F2; height: 75px; border-radius: 35px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 15px 40px rgba(0,0,0,0.3); z-index: 1000; }
 .nav-item { color: #A0A0A0; font-size: 1.6rem; cursor: pointer; transition: 0.2s; }
 .nav-item.active { color: var(--accent-teal); }
-
-.nav-add {
-  background: var(--accent-teal); color: white !important;
-  width: 65px; height: 65px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; margin-top: -55px;
-  box-shadow: 0 10px 20px rgba(79,176,172,0.4);
-  border: 6px solid var(--bg-deep);
-  cursor: pointer;
-}
-
+.nav-add { background: var(--accent-teal); color: white !important; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-top: -55px; box-shadow: 0 10px 20px rgba(79,176,172,0.4); border: 6px solid var(--bg-deep); cursor: pointer; }
 .container { padding: 0 20px; }
 .panel { display: none; animation: fadeIn 0.3s ease; }
 .panel.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .hidden { display: none !important; }
-
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px); z-index: 2000;
-  display: flex; align-items: flex-end;
-}
-
-.modal-content {
-  background: #FAF7F2; width: 100%; border-radius: 45px 45px 0 0;
-  padding: 40px 25px 50px; color: var(--text-dark);
-  max-height: 90vh; overflow-y: auto;
-  animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: flex-end; }
+.modal-content { background: #FAF7F2; width: 100%; border-radius: 45px 45px 0 0; padding: 40px 25px 50px; color: var(--text-dark); max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
 .form-label { display: block; font-size: 0.7rem; font-weight: 800; margin: 15px 0 6px 4px; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
 .neu-inset { background: #EAEAEA; border: none; border-radius: 18px; padding: 16px; width: 100%; outline: none; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; color: var(--text-dark); -webkit-appearance: none; }
 textarea.neu-inset { resize: none; }
-
 .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .type-btn { padding: 15px; border-radius: 20px; background: #EAEAEA; font-weight: 800; border: none; text-align: center; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; color: var(--text-dark); transition: 0.2s; }
 .type-btn.active { background: var(--accent-teal); color: white; }
-
 .label-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
 .label-btn { padding: 13px; border-radius: 18px; background: #EAEAEA; font-weight: 800; border: none; text-align: center; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; color: var(--text-dark); transition: 0.2s; }
 .label-btn.active { background: var(--bg-deep); color: white; }
-
 .btn-submit { width: 100%; padding: 18px; background: var(--bg-deep); color: white; border: none; border-radius: 22px; font-weight: 800; margin-top: 25px; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1rem; transition: opacity 0.2s; }
 .btn-submit:active { opacity: 0.85; }
-
-/* Login screen */
 .login-screen { padding-top: 100px; text-align: center; }
-
-/* Settings modal */
 .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; background: #EAEAEA; border-radius: 20px; margin-bottom: 12px; cursor: pointer; }
 .settings-row span { font-weight: 700; color: var(--text-dark); }
 .settings-logout { border: 2px solid var(--card-terra); background: transparent; color: var(--card-terra); }
-
 .toast { position: fixed; bottom: 125px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--accent-teal); color: white; padding: 12px 25px; border-radius: 50px; font-weight: 700; z-index: 3000; opacity: 0; transition: 0.3s; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
 summary { list-style: none; }
-
-/* Loading state */
 .loading-state { text-align: center; opacity: 0.4; padding: 60px 20px; font-size: 0.9rem; }
-
-/* Transaction card delete button */
-.del-btn { font-size: 0.65rem; color: rgba(45,62,64,0.35); cursor: pointer; margin-top: 5px; text-align: right; display: block; }
-.del-btn:active { color: var(--card-terra); }
-
-/* Tambahin ini di bagian <style> */
-.del-btn-text {
-    font-size: 0.65rem;
-    font-weight: 800;
-    color: #FF5252;
-    cursor: pointer;
-    margin-top: 5px;
-    opacity: 0.7;
-    transition: 0.2s;
-}
-
-.del-btn-text:active {
-    opacity: 1;
-    transform: scale(1.1);
-}  
-
-/* Badge */
+.del-btn-text { font-size: 0.65rem; font-weight: 800; color: #FF5252; cursor: pointer; margin-top: 5px; opacity: 0.7; transition: 0.2s; display: block; text-align: right; }
+.del-btn-text:active { opacity: 1; }
 .badge { font-size: 0.6rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-top: 3px; }
 .badge-needs { background: rgba(45,62,64,0.12); color: var(--text-dark); }
 .badge-lifestyle { background: rgba(217,131,93,0.2); color: var(--card-terra); }
@@ -192,14 +93,13 @@ summary { list-style: none; }
     <div onclick="openSettings()" style="font-size: 1.5rem; cursor: pointer;">⚙️</div>
   </div>
 
-  <!-- HOME PANEL -->
   <div id="panel-home" class="panel active container">
     <div class="clay-card bg-sand" style="text-align: center; padding: 40px 20px; margin-top: 25px;">
       <div style="font-size: 0.75rem; font-weight: 800; opacity: 0.6; letter-spacing: 1px;">TOTAL BALANCE</div>
       <div id="sumBalance" style="font-size: 2.6rem; font-weight: 900; letter-spacing: -1.5px;">Rp 0</div>
       <div style="display: flex; justify-content: center; gap: 25px; font-weight: 700; margin-top: 15px;">
-        <div style="color: var(--text-dark); font-size: 0.9rem;">↑ <span id="sumIncome">0</span></div>
-        <div style="color: var(--text-dark); font-size: 0.9rem;">↓ <span id="sumExpense">0</span></div>
+        <div style="color: var(--text-dark); font-size: 0.9rem;">↑ <span id="sumIncome">Rp 0</span></div>
+        <div style="color: var(--text-dark); font-size: 0.9rem;">↓ <span id="sumExpense">Rp 0</span></div>
       </div>
     </div>
     <div class="activity-section">
@@ -210,13 +110,11 @@ summary { list-style: none; }
     </div>
   </div>
 
-  <!-- HISTORY PANEL -->
   <div id="panel-history" class="panel container">
     <h2 style="margin: 30px 0 20px; font-weight: 800; font-size: 1.8rem; color: var(--card-sand);">Full History</h2>
     <div id="historyListFull"></div>
   </div>
 
-  <!-- BOTTOM NAV -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchPanel('home', this)">🏠</div>
     <div class="nav-add" onclick="openAddModal()">+</div>
@@ -231,20 +129,16 @@ summary { list-style: none; }
       <h2 style="font-weight: 800;">New Record</h2>
       <div onclick="closeModal('addModal')" style="cursor:pointer; opacity:0.4; font-size:1.2rem;">✕</div>
     </div>
-
     <div class="type-grid">
       <div id="btnExp" class="type-btn active" onclick="setEntryType('expense')">💸 Pengeluaran</div>
       <div id="btnInc" class="type-btn" onclick="setEntryType('income')">💵 Pemasukan</div>
     </div>
-
     <label class="form-label">Category</label>
     <select id="selectCatExp" class="neu-inset" onchange="onCatChange()"></select>
-
     <div id="customSourceWrap" class="hidden">
       <label class="form-label">Sumber Spesifik</label>
       <input type="text" id="inputCustomSource" class="neu-inset" placeholder="Misal: bonus, dikasih sodara...">
     </div>
-
     <div id="labelWrap">
       <label class="form-label">Label</label>
       <div class="label-grid">
@@ -252,7 +146,6 @@ summary { list-style: none; }
         <div id="btnLifestyle" class="label-btn" onclick="setLabel('lifestyle')">✨ Lifestyle</div>
       </div>
     </div>
-
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:5px;">
       <div>
         <label class="form-label">Amount (Rp)</label>
@@ -263,29 +156,27 @@ summary { list-style: none; }
         <input type="date" id="inputDate" class="neu-inset">
       </div>
     </div>
-
     <label class="form-label">Description</label>
-    <textarea id="inputDesc" class="neu-inset" style="height:70px;" id="inputDesc"></textarea>
-
+    <textarea id="inputDesc" class="neu-inset" style="height:70px;"></textarea>
     <button onclick="saveEntry()" class="btn-submit">Confirm Transaction ✓</button>
   </div>
 </div>
 
-<div id="deleteModal" class="modal-overlay hidden" onclick="closeModalOnOut(event, 'deleteModal')">
-    <div class="modal-content" style="background: #FAF7F2;">
-        <h2 style="font-weight: 800; color: var(--card-terra); margin-bottom: 10px;">Hapus Data?</h2>
-        <p style="font-size: 0.85rem; opacity: 0.6; margin-bottom: 20px;">Data tidak akan hilang, hanya ditandai sebagai 'Dihapus'.</p>
-        
-        <label class="form-label">Alasan Penghapusan (Reason)</label>
-        <textarea id="deleteReason" class="neu-inset" style="height: 80px; resize: none; background: #EAEAEA; color: var(--text-dark);" placeholder="Misal: Salah input, ganti nominal..."></textarea>
-        
-        <input type="hidden" id="deleteTargetId">
-        
-        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-top: 25px;">
-            <button onclick="closeModal('deleteModal')" class="type-btn">Batal</button>
-            <button onclick="processDelete()" class="btn-submit" style="margin-top: 0; background: var(--card-terra);">Konfirmasi Hapus</button>
-        </div>
+<!-- DELETE MODAL -->
+<div id="deleteModal" class="modal-overlay hidden" onclick="closeModalOnOut(event,'deleteModal')">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h2 style="font-weight: 800; color: var(--card-terra);">🗑️ Hapus Data?</h2>
+      <div onclick="closeModal('deleteModal')" style="cursor:pointer; opacity:0.4; font-size:1.2rem;">✕</div>
     </div>
+    <p style="font-size: 0.85rem; opacity: 0.6; margin-bottom: 20px;">Data tidak akan hilang, hanya ditandai sebagai 'Dihapus'.</p>
+    <label class="form-label">Alasan Penghapusan</label>
+    <textarea id="deleteReason" class="neu-inset" style="height:80px;" placeholder="Misal: Salah input, ganti nominal..."></textarea>
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-top: 25px;">
+      <button onclick="closeModal('deleteModal')" class="type-btn">Batal</button>
+      <button onclick="processDelete()" class="btn-submit" style="margin-top: 0; background: var(--card-terra);">Konfirmasi Hapus</button>
+    </div>
+  </div>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -295,17 +186,14 @@ summary { list-style: none; }
       <h2 style="font-weight:800;">Settings</h2>
       <div onclick="closeModal('settingsModal')" style="cursor:pointer; opacity:0.4; font-size:1.2rem;">✕</div>
     </div>
-
     <div class="settings-row">
       <span>👤 Username</span>
       <span id="settingUser" style="opacity:0.5;"></span>
     </div>
-
     <div id="pwdTriggerRow" class="settings-row" onclick="showPwdFields()">
       <span>🔑 Change Password</span>
       <span style="opacity:0.4;">›</span>
     </div>
-
     <div id="pwdSection" class="hidden">
       <label class="form-label">New Password</label>
       <input type="password" id="newPwd" class="neu-inset" placeholder="Min. 4 karakter">
@@ -315,110 +203,127 @@ summary { list-style: none; }
       <button onclick="confirmNewPwd()" class="btn-submit" style="margin-top:15px;">Update Password</button>
       <button onclick="hidePwdFields()" style="width:100%; padding:14px; background:transparent; border:none; color:var(--text-dark); opacity:0.5; margin-top:8px; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif;">Batal</button>
     </div>
-
     <button onclick="doLogout()" class="btn-submit settings-logout" style="margin-top:10px;">🚪 Logout</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-
 <script>
-<script>
-  <script>
-// --- STATE & CONFIG ---
-let currentUser = null, SHEET_URL = '', entries = [], currentEntryType = 'expense', selectedINL = 'needs';
-
-const CATS_EXPENSE = [
-  { id:'makanan', label:'Food & Drink (Makan)', icon:'🍱' },
-  { id:'restoran', label:'Dining Out (Jajan)', icon:'🍽️' },
-  { id:'kebersihan', label:'Hygiene (Kebersihan)', icon:'🧴' },
-  { id:'rumah', label:'Household (Rumah)', icon:'🏠' },
-  { id:'transportasi', label:'Travel (Transport)', icon:'🚗' },
-  { id:'pakaian', label:'Apparel (Baju)', icon:'👗' },
-  { id:'hiburan', label:'Entertainment (Hiburan)', icon:'🎬' },
-  { id:'kesehatan', label:'Medical (Kesehatan)', icon:'💊' },
-  { id:'pendidikan', label:'Study (Pendidikan)', icon:'📚' },
-  { id:'komunikasi', label:'Internet (Kuota/Pulsa)', icon:'📱' },
-  { id:'hadiah', label:'Gift (Kado/Sosial)', icon:'🎁' }
-];
-
+// ── CONFIG ──
 const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbyDQ-rPiAJd029gaClhD7v_U3sbg8d89pKXF-wcHsP8rleliLSWeN8Jo7gRLRAXFP3d/exec';
 
-// --- FUNGSI LOGIN (SUDAH DIPERBAIKI) ---
+const CATS_EXPENSE = [
+  { id:'makanan',      label:'Food & Drink (Makan)',    icon:'🍱' },
+  { id:'restoran',     label:'Dining Out (Jajan)',       icon:'🍽️' },
+  { id:'kebersihan',   label:'Hygiene (Kebersihan)',     icon:'🧴' },
+  { id:'rumah',        label:'Household (Rumah)',        icon:'🏠' },
+  { id:'transportasi', label:'Travel (Transport)',       icon:'🚗' },
+  { id:'pakaian',      label:'Apparel (Baju)',           icon:'👗' },
+  { id:'hiburan',      label:'Entertainment (Hiburan)', icon:'🎬' },
+  { id:'kesehatan',    label:'Medical (Kesehatan)',      icon:'💊' },
+  { id:'pendidikan',   label:'Study (Pendidikan)',       icon:'📚' },
+  { id:'komunikasi',   label:'Internet (Kuota/Pulsa)',   icon:'📱' },
+  { id:'hadiah',       label:'Gift (Kado/Sosial)',       icon:'🎁' },
+];
+
+// ── STATE ──
+let currentUser = null;
+let SHEET_URL = '';
+let entries = [];
+let currentEntryType = 'expense';
+let selectedINL = 'needs';
+let pendingDeleteId = null;
+
+// ── LOGIN ──
 async function doLogin() {
-    const user = document.getElementById('loginUsername').value.trim();
-    const pass = document.getElementById('loginPassword').value.trim();
-    const err = document.getElementById('loginError');
-    
-    if (!user || !pass) {
-        err.textContent = 'Username & Password wajib diisi!';
-        return;
+  const user = document.getElementById('loginUsername').value.trim();
+  const pass = document.getElementById('loginPassword').value.trim();
+  const err  = document.getElementById('loginError');
+  if (!user || !pass) { err.textContent = 'Username & Password wajib diisi!'; return; }
+  err.textContent = 'Memverifikasi... 🍯';
+  try {
+    const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
+    const accounts = await res.json();
+    const found = accounts.find(a => a.username === user && a.password === pass);
+    if (found) {
+      currentUser = found;
+      SHEET_URL = found.sheet_url;
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
+      document.getElementById('userLabel').textContent = user;
+      document.getElementById('loginPassword').value = '';
+      err.textContent = '';
+      initApp();
+    } else {
+      err.textContent = 'Username atau Password salah!';
     }
-    
-    err.textContent = 'Memverifikasi... 🍯';
-    
-    try {
-        const res = await fetch(ACCOUNTS_URL + '?t=' + Date.now());
-        const accounts = await res.json();
-        const found = accounts.find(a => a.username === user && a.password === pass);
-        
-        if (found) {
-            currentUser = found; 
-            SHEET_URL = found.sheet_url;
-            
-            // Sembunyikan login, tampilkan app
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            
-            // Set Avatar & Label
-            document.getElementById('userAvatar').textContent = user.charAt(0).toUpperCase();
-            document.getElementById('userLabel').textContent = user;
-            
-            err.textContent = '';
-            initApp(); // Jalankan aplikasi
-        } else {
-            err.textContent = 'Username atau Password salah!';
-        }
-    } catch(e) {
-        console.error(e);
-        err.textContent = 'Server Error. Cek koneksi internet!';
-    }
+  } catch(e) {
+    err.textContent = 'Server Error. Cek koneksi internet!';
+  }
 }
 
-// Support Enter Key buat Login
-document.getElementById('loginPassword')?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
 });
 
-function initApp() {
-    document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
-    setEntryType('expense');
-    loadFromSheet();
+// ── LOGOUT ──
+function doLogout() {
+  if (!confirm('Yakin mau logout?')) return;
+  currentUser = null; SHEET_URL = ''; entries = [];
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginUsername').value = '';
+  closeModal('settingsModal');
 }
-// ... lanjut ke fungsi loadFromSheet, renderHistory, dll ...
+
+// ── INIT ──
+function initApp() {
+  document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+  setEntryType('expense');
+  loadFromSheet();
+}
+
+// ── LOAD ──
+async function loadFromSheet() {
+  document.getElementById('historyListHome').innerHTML = '<div class="loading-state">⏳ Memuat data...</div>';
+  document.getElementById('historyListFull').innerHTML = '<div class="loading-state">⏳ Memuat data...</div>';
+  try {
+    const res  = await fetch(SHEET_URL + '?t=' + Date.now());
+    const data = await res.json();
+    entries = data.map(r => ({
+      id:       r.id,
+      date:     formatDateFromSheet(r.date),
+      type:     r.type,
+      catLabel: r.catLabel  || '',
+      catIcon:  r.catIcon   || (r.type === 'income' ? '💵' : '💸'),
+      inlLabel: r.inlLabel  || '',
+      amount:   parseFloat(r.amount) || 0,
+      desc:     r.desc || '',
+      status:   r.status || '',
+      reason:   r.reason || ''
+    }));
+    updateSummary();
+    renderHistory();
+  } catch(e) {
+    showToast('⚠️ Gagal muat data');
+    document.getElementById('historyListHome').innerHTML = '<div class="loading-state">Gagal memuat. Cek koneksi.</div>';
+    document.getElementById('historyListFull').innerHTML = '<div class="loading-state">Gagal memuat. Cek koneksi.</div>';
+  }
+}
 
 function formatDateFromSheet(val) {
   if (!val) return '';
   if (typeof val === 'string') {
-    // Ambil 10 karakter pertama saja (YYYY-MM-DD), abaikan timezone
     if (val.match(/^\d{4}-\d{2}-\d{2}/)) return val.substring(0, 10);
-    // Handle DD/MM/YYYY
-    if (val.match(/^\d{2}\/\d{2}\/\d{4}/)) {
-      const [d, m, y] = val.split('/');
-      return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
-    }
-    // Handle format tanggal Indo seperti "24/4/2026"
     if (val.match(/^\d{1,2}\/\d{1,2}\/\d{4}/)) {
       const [d, m, y] = val.split('/');
       return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
     }
   }
-  // Kalau Date object atau format lain — pakai UTC supaya tidak geser
   const d = new Date(val);
-  if (!isNaN(d)) {
-    return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
-  }
+  if (!isNaN(d)) return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
   return String(val);
 }
 
@@ -434,15 +339,13 @@ async function saveEntry() {
   if (!amount || amount <= 0) { showToast('⚠️ Isi jumlah dulu!'); return; }
   if (!date)                  { showToast('⚠️ Pilih tanggal dulu!'); return; }
   if (currentEntryType === 'expense' && !desc) { showToast('⚠️ Keterangan wajib untuk pengeluaran!'); return; }
-  if (currentEntryType === 'income' && catSel.value === 'lain' && !customSrc) {
-    showToast('⚠️ Isi sumber pendapatannya!'); return;
-  }
+  if (currentEntryType === 'income' && catSel.value === 'lain' && !customSrc) { showToast('⚠️ Isi sumber pendapatannya!'); return; }
 
   let catLabel, catIcon;
   if (currentEntryType === 'expense') {
     const cat = CATS_EXPENSE.find(c => c.id === catSel.value);
-    catLabel  = cat ? cat.label : '';
-    catIcon   = cat ? cat.icon  : '💸';
+    catLabel = cat ? cat.label : '';
+    catIcon  = cat ? cat.icon  : '💸';
   } else {
     catLabel = catSel.value === 'lain' ? customSrc : 'Dari Apih';
     catIcon  = '💵';
@@ -451,7 +354,7 @@ async function saveEntry() {
   const entry = {
     id: Date.now(), type: currentEntryType, date, catLabel, catIcon,
     inlLabel: currentEntryType === 'expense' ? (selectedINL === 'needs' ? 'Needs' : 'Lifestyle') : 'Income',
-    amount, desc: desc || '-'
+    amount, desc: desc || '-', status: '', reason: ''
   };
 
   entries.unshift(entry);
@@ -474,62 +377,24 @@ async function saveEntry() {
 }
 
 // ── DELETE (SOFT) ──
-let pendingDeleteId = null;
-
-// --- LOGIC HAPUS BARU ---
 function deleteEntry(id) {
-    document.getElementById('deleteTargetId').value = id;
-    document.getElementById('deleteReason').value = '';
-    document.getElementById('deleteModal').classList.remove('hidden');
+  pendingDeleteId = id;
+  document.getElementById('deleteReason').value = '';
+  document.getElementById('deleteModal').classList.remove('hidden');
 }
 
 async function processDelete() {
-    const id = document.getElementById('deleteTargetId').value;
-    const reason = document.getElementById('deleteReason').value.trim();
-    
-    if (!reason) { showToast('⚠️ Isi alasannya dulu bro!'); return; }
-
-    const target = entries.find(e => String(e.id) === String(id));
-    if (!target) return;
-
-    showToast('🗑️ Mengupdate status...');
-    closeModal('deleteModal');
-
-    // Update UI Lokal (Kasih status dihapus & alasan)
-    target.status = 'DIHAPUS';
-    target.reason = reason;
-    
-    updateSummary(); 
-    renderHistory();
-
-    try {
-        await fetch(SHEET_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify({
-                action: 'delete',
-                id: target.id,
-                date: target.date,
-                amount: target.amount,
-                desc: target.desc,
-                reason: reason
-            })
-        });
-        showToast('✅ Status data diperbarui');
-    } catch(e) {
-        showToast('❌ Gagal sinkron ke server');
-    }
-}
-
-async function confirmDelete() {
   const reason = document.getElementById('deleteReason').value.trim();
-  if (!reason) { showToast('⚠️ Isi alasan penghapusan dulu!'); return; }
+  if (!reason) { showToast('⚠️ Isi alasannya dulu!'); return; }
 
-  // Update di local state
-  const entry = entries.find(e => String(e.id) === String(pendingDeleteId));
-  if (entry) { entry.status = 'DIHAPUS'; entry.reason = reason; }
+  const target = entries.find(e => String(e.id) === String(pendingDeleteId));
+  if (!target) { closeModal('deleteModal'); return; }
+
+  target.status = 'DIHAPUS';
+  target.reason = reason;
 
   closeModal('deleteModal');
+  updateSummary();
   renderHistory();
   showToast('🗑️ Data ditandai dihapus');
 
@@ -537,100 +402,113 @@ async function confirmDelete() {
     await fetch(SHEET_URL, {
       method: 'POST', mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'delete', id: pendingDeleteId, reason })
+      body: JSON.stringify({
+        action: 'delete',
+        id: target.id,
+        date: target.date,
+        amount: target.amount,
+        desc: target.desc,
+        reason
+      })
     });
   } catch(e) {
-    showToast('⚠️ Gagal update ke Sheet');
+    showToast('⚠️ Gagal sinkron ke Sheet');
   }
   pendingDeleteId = null;
 }
 
-// --- UPDATE RENDER (Biar ada efek coret) ---
+// ── RENDER ──
 function renderHistory() {
-    const listHome = document.getElementById('historyListHome');
-    const listFull = document.getElementById('historyListFull');
-    const today = new Date().toISOString().split('T')[0];
+  const today  = new Date().toISOString().split('T')[0];
+  const colors = ['bg-sage', 'bg-terra', 'bg-sand'];
 
-    const todayEntries = entries.filter(e => e.date === today);
-    const grouped = {};
-    entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
-    const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
-
-    const colors = ['bg-sage', 'bg-terra', 'bg-sand'];
-
-    const cardHTML = (e, i) => {
-        const isDeleted = e.status === 'DIHAPUS';
-        return `
-        <div class="clay-card ${isDeleted ? '' : colors[i % 3]}" style="${isDeleted ? 'background: #d1d1d1; opacity: 0.7;' : ''}">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; gap:15px; align-items:center;">
-                    <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; filter: ${isDeleted ? 'grayscale(1)' : 'none'}">
-                        ${e.catIcon}
-                    </div>
-                    <div>
-                        <div style="font-weight:800; font-size:1rem; text-decoration: ${isDeleted ? 'line-through' : 'none'}">${e.desc}</div>
-                        <div style="font-size:0.75rem; font-weight:600; opacity:0.6;">
-                            ${isDeleted ? `<span style="color:red;">DELETED: ${e.reason}</span>` : e.catLabel}
-                        </div>
-                    </div>
-                </div>
-                <div style="text-align:right;">
-                    <div style="font-weight:900; font-size:1.1rem; text-decoration: ${isDeleted ? 'line-through' : 'none'}">
-                        ${e.type==='income'?'+':'-'}${e.amount.toLocaleString('id-ID')}
-                    </div>
-                    ${!isDeleted ? <div onclick="deleteEntry('${e.id}')" class="del-btn-text">DELETE ✕</div> : ''}
-                </div>
+  const cardHTML = (e, i) => {
+    const isDeleted  = e.status === 'DIHAPUS';
+    const badgeClass = e.type === 'income' ? 'badge-income' : (e.inlLabel === 'Needs' ? 'badge-needs' : 'badge-lifestyle');
+    if (isDeleted) {
+      return `
+      <div class="clay-card" style="background:#d1d1d1; opacity:0.65; margin-bottom:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; gap:14px; align-items:center; flex:1; min-width:0;">
+            <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; filter:grayscale(1); flex-shrink:0;">${e.catIcon}</div>
+            <div style="min-width:0;">
+              <div style="font-weight:800; font-size:0.95rem; text-decoration:line-through; opacity:0.7;">${e.desc || '—'}</div>
+              <div style="font-size:0.72rem; font-weight:600; color:#FF5252;">DIHAPUS: ${e.reason}</div>
+              <span class="badge badge-needs">${e.catLabel}</span>
             </div>
-        </div>`;
-    };
-
-    listHome.innerHTML = todayEntries.map(cardHTML).join('') || '<div style="text-align:center; opacity:0.3; padding:40px;">No activity today</div>';
-    listFull.innerHTML = sortedDates.map(date => {
-        const isToday = date === today;
-        return `
-            <details style="margin-bottom:12px;" ${isToday ? 'open' : ''}>
-                <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 0; display:flex; justify-content:space-between; align-items:center;">
-                    <span>📅 ${isToday ? 'Hari Ini' : date}</span>
-                    <span style="font-size:0.7rem; opacity:0.5;">DETAIL ▾</span>
-                </summary>
-                <div style="margin-top:10px;">${grouped[date].map(cardHTML).join('')}</div>
-            </details>`;
-    }).join('');
-}
-
-function updateSummary() {
-    const activeEntries = entries.filter(e => e.status !== 'DIHAPUS');
-    const inc = activeEntries.filter(e => e.type === 'income').reduce((s, e) => s + e.amount, 0);
-    const exp = activeEntries.filter(e => e.type === 'expense').reduce((s, e) => s + e.amount, 0);
-    const totalBalance = inc - exp;
-    
-    // Ambil nilai angka aja dari teks saldo yang sekarang tampil
-    const currentDisplay = document.getElementById('sumBalance').textContent.replace(/[^\d-]/g, '');
-    const oldBalance = parseInt(currentDisplay) || 0;
-    
-    // Jalankan animasi
-    animateValue('sumBalance', oldBalance, totalBalance, 500);
-    
-    document.getElementById('sumIncome').textContent = inc.toLocaleString('id-ID');
-    document.getElementById('sumExpense').textContent = exp.toLocaleString('id-ID');
-}  
-
-function animateValue(id, start, end, duration) {
-    const obj = document.getElementById(id);
-    const range = end - start;
-    let startTime = null;
-
-    function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const progress = Math.min((timestamp - startTime) / duration, 1);
-        const current = Math.floor(progress * range + start);
-        obj.textContent = 'Rp ' + current.toLocaleString('id-ID');
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
+          </div>
+          <div style="font-weight:900; font-size:1rem; text-decoration:line-through; opacity:0.6; flex-shrink:0; margin-left:10px;">
+            ${e.type==='income'?'+':'−'}Rp ${e.amount.toLocaleString('id-ID')}
+          </div>
+        </div>
+      </div>`;
     }
-    window.requestAnimationFrame(step);
+    return `
+    <div class="clay-card ${colors[i % 3]}" style="margin-bottom:18px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; gap:14px; align-items:center; flex:1; min-width:0;">
+          <div style="background:rgba(255,255,255,0.3); width:48px; height:48px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">${e.catIcon}</div>
+          <div style="min-width:0;">
+            <div style="font-weight:800; font-size:0.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${e.desc || '—'}</div>
+            <div style="font-size:0.72rem; font-weight:600; opacity:0.65;">${e.catLabel}</div>
+            <span class="badge ${badgeClass}">${e.inlLabel || ''}</span>
+          </div>
+        </div>
+        <div style="text-align:right; flex-shrink:0; margin-left:10px;">
+          <div style="font-weight:900; font-size:1rem;">${e.type==='income'?'+':'−'}Rp ${e.amount.toLocaleString('id-ID')}</div>
+          <span class="del-btn-text" onclick="deleteEntry('${e.id}')">DELETE ✕</span>
+        </div>
+      </div>
+    </div>`;
+  };
+
+  const todayEntries = entries.filter(e => e.date === today);
+  document.getElementById('historyListHome').innerHTML = todayEntries.length
+    ? todayEntries.map((e,i) => cardHTML(e,i)).join('')
+    : '<div class="loading-state">Belum ada transaksi hari ini 🌱</div>';
+
+  const grouped = {};
+  entries.forEach(e => { if (!grouped[e.date]) grouped[e.date] = []; grouped[e.date].push(e); });
+  const sortedDates = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+  document.getElementById('historyListFull').innerHTML = sortedDates.length
+    ? sortedDates.map(date => {
+        const label = date === today ? 'Today (Hari Ini)' : new Date(date + 'T00:00:00').toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long'});
+        return `
+        <details style="margin-bottom:14px;" ${date === today ? 'open' : ''}>
+          <summary style="font-weight:800; color:var(--card-sand); cursor:pointer; padding:8px 4px; display:flex; justify-content:space-between; align-items:center; user-select:none;">
+            <span>📅 ${label}</span>
+            <span style="font-size:0.7rem; opacity:0.5;">▾</span>
+          </summary>
+          <div style="margin-top:10px;">${grouped[date].map((e,i) => cardHTML(e,i)).join('')}</div>
+        </details>`;
+      }).join('')
+    : '<div class="loading-state">Belum ada data 📭</div>';
 }
+
+// ── SUMMARY ──
+function updateSummary() {
+  const active = entries.filter(e => e.status !== 'DIHAPUS');
+  const inc = active.filter(e => e.type==='income').reduce((s,e) => s+e.amount, 0);
+  const exp = active.filter(e => e.type==='expense').reduce((s,e) => s+e.amount, 0);
+  const bal = inc - exp;
+  animateValue('sumBalance', bal);
+  document.getElementById('sumIncome').textContent  = 'Rp ' + inc.toLocaleString('id-ID');
+  document.getElementById('sumExpense').textContent = 'Rp ' + exp.toLocaleString('id-ID');
+}
+
+function animateValue(id, end) {
+  const el = document.getElementById(id);
+  const start = 0, duration = 500;
+  let startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    const p = Math.min((ts - startTime) / duration, 1);
+    el.textContent = 'Rp ' + Math.floor(p * end).toLocaleString('id-ID');
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
 // ── FORM ──
 function setEntryType(t) {
   currentEntryType = t;
@@ -656,19 +534,18 @@ function renderCats() {
 }
 
 function onCatChange() {
-  const val  = document.getElementById('selectCatExp').value;
-  const show = currentEntryType === 'income' && val === 'lain';
-  document.getElementById('customSourceWrap').classList.toggle('hidden', !show);
+  const val = document.getElementById('selectCatExp').value;
+  document.getElementById('customSourceWrap').classList.toggle('hidden', !(currentEntryType === 'income' && val === 'lain'));
 }
 
 function formatAmount(el) {
   const raw = el.value.replace(/\D/g, '');
-  el.value  = raw ? parseInt(raw).toLocaleString('id-ID') : '';
+  el.value = raw ? parseInt(raw).toLocaleString('id-ID') : '';
 }
 
 function resetForm() {
   document.getElementById('inputAmount').value = '';
-  document.getElementById('inputDesc').value   = '';
+  document.getElementById('inputDesc').value = '';
   document.getElementById('inputCustomSource').value = '';
   document.getElementById('customSourceWrap').classList.add('hidden');
   setEntryType('expense');
@@ -680,8 +557,8 @@ function openSettings() {
   document.getElementById('settingUser').textContent = currentUser ? currentUser.username : '';
   document.getElementById('pwdSection').classList.add('hidden');
   document.getElementById('pwdTriggerRow').classList.remove('hidden');
-  document.getElementById('newPwd').value      = '';
-  document.getElementById('confirmPwd').value  = '';
+  document.getElementById('newPwd').value = '';
+  document.getElementById('confirmPwd').value = '';
   document.getElementById('pwdError').textContent = '';
   document.getElementById('settingsModal').classList.remove('hidden');
 }
@@ -700,9 +577,9 @@ async function confirmNewPwd() {
   const newPass  = document.getElementById('newPwd').value.trim();
   const confPass = document.getElementById('confirmPwd').value.trim();
   const errEl    = document.getElementById('pwdError');
-  if (!newPass)                   { errEl.textContent = 'Isi password baru.'; return; }
-  if (newPass.length < 4)         { errEl.textContent = 'Minimal 4 karakter.'; return; }
-  if (newPass !== confPass)       { errEl.textContent = 'Password tidak cocok.'; return; }
+  if (!newPass)             { errEl.textContent = 'Isi password baru.'; return; }
+  if (newPass.length < 4)   { errEl.textContent = 'Minimal 4 karakter.'; return; }
+  if (newPass !== confPass) { errEl.textContent = 'Password tidak cocok.'; return; }
   try {
     await fetch(ACCOUNTS_URL, {
       method: 'POST', mode: 'no-cors',
@@ -724,7 +601,7 @@ function openAddModal() {
   document.getElementById('addModal').classList.remove('hidden');
 }
 
-function closeModal(id)         { document.getElementById(id).classList.add('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 function closeModalOnOut(e, id) { if (e.target.id === id) closeModal(id); }
 
 function switchPanel(p, el) {
