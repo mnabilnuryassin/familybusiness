@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+刻 = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
@@ -7,4 +7,5 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+};
+module.exports = 刻;
