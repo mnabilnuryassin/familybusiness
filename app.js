@@ -13,6 +13,8 @@ const CATS_EXPENSE = [
   { id:'pendidikan',   label:'Study (Pendidikan)',       icon:'📚' },
   { id:'komunikasi',   label:'Internet (Kuota/Pulsa)',   icon:'📱' },
   { id:'hadiah',       label:'Gift (Kado/Sosial)',       icon:'🎁' },
+  { id:'hutang',       label:'Hutang (Kita Berhutang)',       icon:'🎁' },
+  { id:'piutang',       label:'Piutang (Kita Minjemin)',       icon:'🎁' },
 ];
 
 // ── STATE ──
